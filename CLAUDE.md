@@ -158,7 +158,13 @@ Testing on the phone or in XCTrack is different: a LAN address like
 blocked there. Either publish to GitHub Pages (the real target anyway) or open
 a temporary https tunnel, e.g. `cloudflared tunnel --url http://localhost:8080`.
 
-There is nothing to build, install or watch. Reload the page.
+There is nothing to build, install or watch — but **an edit takes two reloads
+to appear**. `localhost` is a secure context, so `sw.js` registers there too,
+and its stale-while-revalidate serves the cached copy while fetching your
+change for next time. Measured: edit, reload → old file; reload again → new
+file. Hard-reload (`Cmd`/`Ctrl`+`Shift`+`R`), or tick *Bypass for network*
+under DevTools → Application → Service workers, and the problem disappears.
+Chasing a change that "didn't take" is otherwise a good way to lose an hour.
 
 ## Conventions
 

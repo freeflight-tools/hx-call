@@ -133,6 +133,14 @@ geolocation there.
 
     python3 -m http.server 8080     # then http://localhost:8080
 
+Any equivalent works — `npx serve`, `php -S localhost:8080`. `localhost` counts
+as a secure context, so geolocation works there.
+
+While editing, expect **two reloads** before a change shows up: the service
+worker registers on `localhost` too and serves its cached copy first, fetching
+your edit in the background for next time. Hard-reload (`Cmd`/`Ctrl`+`Shift`+`R`)
+or tick *Bypass for network* in DevTools → Application → Service workers.
+
 For testing on a phone or in XCTrack you need https (a LAN IP won't do):
 publish to GitHub Pages, or tunnel with
 `cloudflared tunnel --url http://localhost:8080`.
