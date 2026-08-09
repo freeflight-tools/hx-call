@@ -32,11 +32,21 @@ header{
 }
 
 #locate{
-  display:block;width:calc(100% - 16px);margin:8px 8px 0;padding:13px;
+  display:flex;align-items:center;gap:11px;
+  width:calc(100% - 16px);margin:8px 8px 0;padding:12px 13px;
   background:var(--panel-hi);border:1px solid var(--chart);border-radius:3px;
   color:var(--fg);font:600 1em/1.2 var(--sans);text-align:left;
 }
+#locate .ic{
+  flex:none;width:calc(23px * var(--scale));height:calc(23px * var(--scale));
+  color:var(--chart);
+}
+#locate .tx{flex:1;min-width:0}
+#locate b{display:block;font-weight:700}
 #locate small{display:block;margin-top:4px;font-weight:400;font-size:.78em;color:var(--dim)}
+/* blocked or insecure is a fault to fix, not an invitation — say so in amber */
+#locate.blocked{border-color:var(--amber)}
+#locate.blocked .ic{color:var(--amber)}
 
 main{padding:8px 8px 4px}
 
@@ -139,9 +149,12 @@ footer{padding:12px 10px;color:var(--dim);font-size:.72em;line-height:1.5;font-f
     transition:background-color .12s,border-color .12s;
   }
   .call:hover{background:var(--rule)}
-  .more:hover,#locate:hover,.sheetfoot button:hover,.sheetfoot a:hover{
-    border-color:var(--chart);
-  }
+  .more:hover,.sheetfoot button:hover,.sheetfoot a:hover{border-color:var(--chart)}
+  /* #locate is already outlined in the accent, so a border-colour hover
+     would be invisible. Double the outline inwards instead: no layout
+     shift, and distinct from the pressed state below it. */
+  #locate:hover{box-shadow:inset 0 0 0 1px var(--chart)}
+  #locate.blocked:hover{box-shadow:inset 0 0 0 1px var(--amber)}
   #sheet > summary:hover,.field.set > summary:hover,.setlist label:hover{color:var(--fg)}
   .meta button:hover{color:var(--chart)}
 }
@@ -201,6 +214,20 @@ const made   = {};
 })();
 
 locEl.addEventListener("click", function(){ HX.requestLocation(); });
+
+/* Built once, then only the two text nodes change — the button is on screen
+   for every update until a fix arrives, and rebuilding it each tick would be
+   a DOM write for nothing. The crosshair is the same idea as the "centre on
+   me" control every map app uses, so it needs no explaining. */
+locEl.innerHTML =
+  '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
+  ' stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
+    '<circle cx="12" cy="12" r="6.6"/>' +
+    '<circle cx="12" cy="12" r="2.3" fill="currentColor" stroke="none"/>' +
+    '<path d="M12 1.4v3.2M12 19.4v3.2M1.4 12h3.2M19.4 12h3.2"/>' +
+  '</svg><span class="tx"><b></b><small></small></span>';
+const locTitle = locEl.querySelector("b");
+const locHint  = locEl.querySelector("small");
 moreEl.addEventListener("click", function(){ HX.setShowAll(!moreEl.dataset.on); });
 
 /* ── strips ───────────────────────────────────────────────────────── */
@@ -288,19 +315,24 @@ HX.start(function(st){
 
   // locate button
   const copy = {
-    idle:    ["Use my location", "Needed to sort zones by distance. Nothing leaves your phone."],
-    asking:  ["Locating…", "Allow location access when your browser asks."],
-    denied:  ["Location blocked", "Enable it for this site in your browser settings, then tap here."],
-    lost:    ["Location unavailable", "No fix yet. Tap to retry, or go outside."],
-    insecure:["Location needs https", "Open this page over https:// to sort zones by distance."]
+    idle:    ["Turn on location",
+              "Zones stay listed A–Z until you do. Sorting by distance needs it, and nothing leaves your phone."],
+    asking:  ["Waiting for permission…",
+              "Allow location access when your browser asks."],
+    denied:  ["Location is blocked",
+              "Allow it for this site in your browser settings, then tap here."],
+    lost:    ["No fix yet",
+              "Location is on but hasn't locked on. Tap to retry, or go outside."],
+    insecure:["Location needs https",
+              "Open this page over https:// to sort zones by distance."]
   }[st.geoState];
   if (!HX.USE_GEO || st.geoState === "live" || !copy){ locEl.hidden = true; }
   else {
     locEl.hidden = false;
-    locEl.innerHTML = "";
-    locEl.appendChild(document.createTextNode(copy[0]));
-    const s = document.createElement("small"); s.textContent = copy[1];
-    locEl.appendChild(s);
+    if (locTitle.textContent !== copy[0]) locTitle.textContent = copy[0];
+    if (locHint.textContent  !== copy[1]) locHint.textContent  = copy[1];
+    const lcls = (st.geoState === "denied" || st.geoState === "insecure") ? "blocked" : "";
+    if (locEl.className !== lcls) locEl.className = lcls;
   }
 
   // strips
