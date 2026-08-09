@@ -27,12 +27,12 @@
       parameters and the settings UI ─────────────────────────────── */
 
 const SPEC = [
-  {key:"max",     type:"int",  min:1, max:99,  def:4,      label:"Results",        hint:"How many zones to show"},
-  {key:"range",   type:"int",  min:1, max:999, def:40,     label:"Range",  unit:"km", hint:"Hide zones further than this"},
-  {key:"refresh", type:"int",  min:5, max:900, def:30,     label:"Refresh", unit:"s", hint:"Seconds between updates"},
+  {key:"max",     type:"int",  min:1, max:99,  def:4,      label:"Max results",    hint:"At most this many of the matching zones are listed"},
+  {key:"range",   type:"int",  min:1, max:999, def:10,     label:"Range",  unit:"km", hint:"Hide zones further than this"},
+  {key:"refresh", type:"int",  min:5, max:900, def:60,     label:"Position refresh", unit:"s", hint:"Seconds between position updates"},
   {key:"size",    type:"int",  min:0, max:100, def:0,      label:"Text size", unit:"%", hint:"Scale everything up"},
   {key:"theme",   type:"enum", options:["auto","dark","light"], def:"auto", label:"Theme", hint:"Auto follows your phone"},
-  {key:"nonum",   type:"bool", def:1,          label:"Zones without a number", hint:"Show HX zones whose number isn't known yet"}
+  {key:"nonum",   type:"bool", def:0,          label:"Also show zones without a number", hint:"HX zones whose number isn't known yet — nothing to dial"}
 ];
 
 const COARSE_M = 2000;      // above this the fix can't be trusted to rank

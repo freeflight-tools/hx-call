@@ -59,12 +59,12 @@ Identical for both pages, and identical to the settings UI — the fields are ge
 
 | Parameter | Default | |
 |---|---|---|
-| `max=N` | `4` | How many zones to show |
-| `range=KM` | `40` | Hide zones further than this |
-| `refresh=SEC` | `30` | Update interval, 5–900 |
+| `max=N` | `4` | At most this many of the matching zones are listed |
+| `range=KM` | `10` | Hide zones further than this |
+| `refresh=SEC` | `60` | Seconds between position updates, 5–900 |
 | `size=N` | `0` | Text scale, 0–100 (%) |
 | `theme=` | `auto` | `auto` follows the phone, or `dark` / `light` |
-| `nonum=` | `1` | `0` hides zones whose number isn't known yet |
+| `nonum=` | `0` | `1` also shows zones whose number isn't known yet |
 
 Position, if you want to supply it yourself:
 
@@ -91,7 +91,9 @@ Tapping a number starts the re-check clock. Meiringen follows its tape schedule 
 
 **unverified** means the number hasn't been confirmed against the current eVFR Manual. Do that before relying on it.
 
-Zones with **no number on file** are listed on purpose. A missing entry would read as "no HX here", which is the dangerous mistake. Hide them with `nonum=0` if you've accepted that risk.
+Zones with **no number on file** are hidden by default: this is a speed-dial, and a zone you can't ring is a button that does nothing. They are still in the data, and `nonum=1` shows them.
+
+Turn it on if you want them, but either way **read the airspace off your flight computer, not off this list**. Eight of the thirteen entries have no number yet, so by default the list is silent about most Swiss HX airspace. An empty screen here means "nothing to dial", never "no HX here".
 
 Two behaviours worth knowing:
 

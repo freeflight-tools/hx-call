@@ -37,9 +37,13 @@ to them.
   deliberately oversized triage radii. Never tighten one to "improve accuracy",
   and never present them as boundaries. An extra entry on screen costs nothing;
   a missing one costs an airspace violation.
-- **Never delete a zone that has no phone number.** They render as "no number on
-  file" on purpose. A missing entry reads as "no HX here", which is the
-  dangerous failure. `nonum=0` hides them; that is the user's choice to make.
+- **Never delete a zone that has no phone number.** They stay in `hx/data.js`
+  and render as "no number on file" when shown. `nonum` decides whether they
+  are displayed; it defaults to 0, because a button that can't be dialled
+  misses the point of a speed-dial and the airspace reference is the map.
+  That default is a deliberate trade: it means the list is silent about eight
+  of thirteen zones, so the pages must never imply the list is a survey of
+  what is nearby. Deleting the entries would foreclose the choice entirely.
 - **Never set `v:true`** on a zone unless the number was actually checked
   against that aerodrome's AD INFO page in the current eVFR Manual. `v:false`
   renders a red "unverified" tag. That tag is the point.
@@ -74,8 +78,8 @@ to them.
 - **Minimise DOM writes.** Elements are built once and reused; each update
   writes only text nodes whose value changed, and reorders only when the sort
   order changed. A stationary pilot should cause zero writes.
-- Default poll is 30 s. Don't lower it — battery matters more than freshness
-  for data that changes on a 15–30 minute cycle.
+- Default position poll is 60 s. Don't lower it — battery matters more than
+  freshness for data that changes on a 15–30 minute cycle.
 - `localStorage` is always accessed through the guarded wrapper in `core.js`.
   It is load-bearing: with `${lat}/${lng}` substitution XCTrack reloads the
   whole page periodically, and this is what carries the re-check clock across.
