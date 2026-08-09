@@ -128,9 +128,14 @@ to them.
    need confirming. The owner checks numbers personally — the long-term aim is
    that the rest of the data is community maintained, with contributed numbers
    arriving `v:false` and only being marked verified after that check.
-3. **Untested on device: does XCTrack's WebView honour `tel:` links?** Some
-   Android WebViews swallow non-http schemes. If it fails, the standalone page
-   becomes the workaround and it's worth reporting to the XCTrack devs.
+3. **`tel:` does not work in XCTrack — answered, and worked around.** Measured
+   on device with `tools/tel-probe.html`: a `tel:` link, `tel:` by assignment,
+   `intent://…ACTION_DIAL` and `window.open` all fail, and the tap strands the
+   widget on the WebView's error page until it reloads. The clipboard was the
+   only thing that worked. So `HX.NO_TEL` detects the WebView and the widget
+   copies the number instead of linking to it. An issue asking XCTrack to
+   forward the intent is drafted; if they ship it, drop `NO_TEL` and the chips
+   go back to dialling directly.
 4. **Live status.** See `docs/next-session.md`. Ask the friend who built
    pgairspace.ch before reverse-engineering anything.
 5. **Upstream the data** to the SHV airspace DB (dominik@airriders.ch) rather

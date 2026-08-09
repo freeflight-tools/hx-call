@@ -68,6 +68,7 @@ body{padding:2px}
    border-color hover would quietly erase fresh/due. Chips without a
    number are <div>, never <a>, so they stay inert.
    XCTrack reports a coarse pointer and never applies the hover block. */
+a.chip{cursor:pointer}          /* also when there is no href to dial */
 a.chip:active{background:var(--panel-hi)}
 @media (hover:hover) and (pointer:fine){
   a.chip{transition:background-color .12s}
@@ -91,14 +92,54 @@ a.chip:active{background:var(--panel-hi)}
 const grid = document.getElementById("grid");
 const made = {};                 // id -> {el, nm, km, ph, lastCls, lastKm, lastPh}
 
+/* Clipboard, both ways round: the async API where it is allowed, the old
+   selection trick where it is not. The probe found copying to be the only
+   thing that works inside XCTrack, so this is the fallback the chips use
+   there — copy, switch to the dialler, paste. */
+function copyText(s){
+  const legacy = function(){
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = s;
+      ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    } catch(e){}
+  };
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(s).catch(legacy);
+      return;
+    }
+  } catch(e){}
+  legacy();
+}
+
 function chipFor(z){
   if (made[z.id]) return made[z.id];
 
   const el = document.createElement(z.p ? "a" : "div");
   el.className = "chip";
-  if (z.p){
+  if (z.p && !HX.NO_TEL){
     el.href = "tel:" + z.p;
     el.addEventListener("click", function(){ HX.markCalled(z.id); });
+  } else if (z.p){
+    /* No href on purpose. A tel: link here does not dial, it navigates the
+       widget onto the WebView's error page and leaves it there — worse than
+       not being tappable at all. */
+    el.setAttribute("role", "button");
+    el.addEventListener("click", function(){
+      copyText(z.p);
+      HX.markCalled(z.id);          // re-renders, so this must come first
+      const c = made[z.id];
+      c.ph.textContent = "COPIED ✓";
+      clearTimeout(c.flash);
+      /* lastPh is whatever the render loop last computed, so restoring from
+         it stays correct even if the state changed while we were flashing. */
+      c.flash = setTimeout(function(){ c.ph.textContent = c.lastPh; }, 1800);
+    });
   }
 
   const top = document.createElement("div");

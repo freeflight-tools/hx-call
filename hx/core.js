@@ -171,6 +171,19 @@ const HAS_XCT = (function(){
 
 const USE_GEO = !PINNED && !HAS_XCT && !urlFix;
 
+/* An Android WebView resolves http(s) and nothing else unless the host app
+   forwards other schemes, and XCTrack's does not: a tel: link lands on the
+   "Web page not available" page and the widget is stuck there until it
+   reloads. Measured on device — tel:, intent://…DIAL and window.open all
+   fail, and only the clipboard works. Detected by the JS interface, or by
+   the "wv" token Android puts in a WebView user agent; Chrome proper does
+   not carry it, so an ordinary phone browser still dials.
+   Revisit if XCTrack starts forwarding the intent. */
+const NO_TEL = (function(){
+  try { return HAS_XCT || /;\s?wv\)/.test(navigator.userAgent); }
+  catch(e){ return false; }
+})();
+
 let fix = null, fixSrc = "", geoState = "";
 let watchId = null, timer = null, showAll = false;
 let onUpdate = null, keepNearest = true;
@@ -338,6 +351,7 @@ function emit(){ if (onUpdate) onUpdate(compute()); }
 const HX = {
   SPEC: SPEC,
   HAS_XCT: HAS_XCT,
+  NO_TEL: NO_TEL,
   PINNED: PINNED,
   USE_GEO: USE_GEO,
 
