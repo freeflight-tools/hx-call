@@ -14,7 +14,7 @@ HX means an airspace has no fixed operating hours and can be activated at 30 min
 |---|---|
 | **`widget.html`** | Compact grid of call buttons on a transparent background, for the XCTrack Web page widget. Shows nothing at all when nothing is in range. |
 | **`app.html`** | Full page: names, landmarks, notes, re-check state, settings. For planning, and for anyone not using XCTrack. |
-| **`index.html`** | Pick a version, configure it, copy the URL. |
+| **`index.html`** | Pick a version, configure it, then copy the URL or scan it off the screen with your phone. |
 
 Both are driven by the same engine, so a change to the data or the logic lands in both.
 
@@ -25,13 +25,16 @@ widget.html     widget view       (layout inline)
 hx/data.js      the zones          ← edit this
 hx/core.js      config, position, ranking, re-check clock
 hx/base.css     colour tokens, light/dark, shared primitives
+hx/qr.js        QR encoder, launcher page only — never loaded in flight
 ```
 
 No dependencies, no build step, no network at runtime. Any static host: GitHub Pages, Netlify, or a local file.
 
 ## XCTrack setup
 
-Add a **Web page** widget, paste the URL from `index.html`, then:
+Add a **Web page** widget and paste the URL from `index.html` — configure it
+there first, then either copy the URL or scan the QR code with the phone you fly
+with, which saves typing a long URL on a small screen. Then:
 
 | Setting | Value | Why |
 |---|---|---|
