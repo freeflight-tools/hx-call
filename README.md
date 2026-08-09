@@ -13,7 +13,7 @@ HX means an airspace has no fixed operating hours and can be activated at 30 min
 | | |
 |---|---|
 | **`widget.html`** | Compact grid of call buttons on a transparent background, for the XCTrack Web page widget. Shows nothing at all when nothing is in range. |
-| **`app.html`** | Full page: names, landmarks, notes, re-check state, settings. For planning, and for anyone not using XCTrack. |
+| **`app.html`** | The app: names, landmarks, notes, re-check state, settings. Add it to your home screen. For planning, and for anyone not using XCTrack. |
 | **`index.html`** | Pick a version, configure it, then copy the URL or scan it off the screen with your phone. |
 
 Both are driven by the same engine, so a change to the data or the logic lands in both.
