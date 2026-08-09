@@ -6,6 +6,8 @@ HX means an airspace has no fixed operating hours and can be activated at 30 min
 
 **It is not an airspace tool.** No map, no boundaries, no altitudes — your flight computer already has those. If you can't confirm a status, the airspace is active.
 
+**→ [elgandoz.github.io/hx-call](https://elgandoz.github.io/hx-call/)**
+
 ## Two versions
 
 | | |
