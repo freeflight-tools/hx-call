@@ -111,7 +111,12 @@ function chipFor(z){
 }
 
 HX.start(function(st){
-  const vis = st.rows.filter(function(r){ return r.strict; });
+  /* No position yet — GPS still acquiring, or the placeholders were never
+     substituted. Without a fix nothing can be ranked, and the engine falls
+     back to offering every zone, which here would paint the map with
+     buttons that mean nothing. Blank is the honest output; the panel is
+     transparent, so it simply isn't there until there is something to say. */
+  const vis = st.fix ? st.rows.filter(function(r){ return r.strict; }) : [];
 
   // reorder / insert only what changed
   let n = 0;

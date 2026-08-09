@@ -88,9 +88,12 @@ to them.
 - **The widget's `<body>` must stay unpainted.** XCTrack renders a white or
   absent background as transparent so the widget floats over the map. Every
   chip carries its own background. Don't add a body background.
-- **The widget renders nothing when nothing is in range** (`keepNearest:false`).
-  An empty transparent panel is correct output there. `app.html` keeps the
-  nearest entry instead, because a blank page reads as broken.
+- **The widget renders nothing when nothing is in range** (`keepNearest:false`),
+  and nothing at all when there is no position yet. An empty transparent panel
+  is correct output there. Without a fix the engine drops the limits and offers
+  every zone — right for `app.html`, wrong for a panel floating over the map,
+  where it would be a screenful of buttons that rank nothing. `app.html` keeps
+  the nearest entry instead, because a blank page reads as broken.
 - **Minimise DOM writes.** Elements are built once and reused; each update
   writes only text nodes whose value changed, and reorders only when the sort
   order changed. A stationary pilot should cause zero writes.
