@@ -63,7 +63,6 @@ main{padding:8px 8px 4px}
   background:var(--panel-hi);border-top:1px solid var(--rule);
   color:var(--fg);text-decoration:none;
 }
-.call:active{background:var(--rule)}
 .gl{font-size:1.35em;line-height:1;color:var(--chart)}
 .num{font-family:var(--mono);font-size:1.35em;font-weight:700;flex:1}
 .go{font-family:var(--mono);font-size:.72em;color:var(--dim);letter-spacing:.1em}
@@ -129,6 +128,23 @@ main{padding:8px 8px 4px}
   color:var(--fg);font:600 .85em var(--sans);
 }
 footer{padding:12px 10px;color:var(--dim);font-size:.72em;line-height:1.5;font-family:var(--mono)}
+
+/* ── pointer feedback (see hx/base.css) ─────────────────────────── */
+.call:active{background:var(--rule)}
+.more:active,#locate:active,.sheetfoot button:active,.sheetfoot a:active{
+  background:var(--rule);
+}
+@media (hover:hover) and (pointer:fine){
+  .call,.more,#locate,.sheetfoot button,.sheetfoot a{
+    transition:background-color .12s,border-color .12s;
+  }
+  .call:hover{background:var(--rule)}
+  .more:hover,#locate:hover,.sheetfoot button:hover,.sheetfoot a:hover{
+    border-color:var(--chart);
+  }
+  #sheet > summary:hover,.field.set > summary:hover,.setlist label:hover{color:var(--fg)}
+  .meta button:hover{color:var(--chart)}
+}
 </style>
 </head>
 <body>

@@ -79,6 +79,19 @@ html,body{
 
 a{color:var(--chart)}
 
+/* Anything clickable should look it once there is a cursor to show. */
+button,summary{cursor:pointer}
+
+/* Pointer feedback, page by page below this file, follows two rules:
+
+   Hover is gated behind (hover:hover) and (pointer:fine). On a touch screen
+   :hover fires on tap and then sticks until you tap something else, leaving
+   a button lit long after you used it. XCTrack's WebView reports a coarse
+   pointer, so the widget never sees these rules at all.
+
+   :active is not gated: the tap-highlight reset above removes the platform's
+   own press feedback, so it is the only confirmation a finger gets. */
+
 /* status dot, used by both pages */
 .led{
   display:inline-block;width:.5em;height:.5em;border-radius:50%;

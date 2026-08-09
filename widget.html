@@ -62,6 +62,17 @@ body{padding:2px}
   overflow:hidden;text-overflow:ellipsis;
 }
 .ph.due{color:var(--amber);font-weight:700}
+
+/* ── pointer feedback (see hx/base.css) ───────────────────────────────
+   Background only. The left border carries the re-check state, so a
+   border-color hover would quietly erase fresh/due. Chips without a
+   number are <div>, never <a>, so they stay inert.
+   XCTrack reports a coarse pointer and never applies the hover block. */
+a.chip:active{background:var(--panel-hi)}
+@media (hover:hover) and (pointer:fine){
+  a.chip{transition:background-color .12s}
+  a.chip:hover{background:var(--panel-hi)}
+}
 </style>
 </head>
 <body>

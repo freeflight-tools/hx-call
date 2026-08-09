@@ -84,6 +84,16 @@ ol b{color:var(--fg)}
   color:var(--amber);font-size:.82em;line-height:1.45;
 }
 footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
+
+/* ── pointer feedback (see hx/base.css) ─────────────────────────── */
+.pick a:active,#reset:active{background:var(--panel-hi)}
+#copy:active{filter:brightness(.92)}
+@media (hover:hover) and (pointer:fine){
+  .pick a,#reset,#copy{transition:background-color .12s,border-color .12s,filter .12s}
+  .pick a:hover,#reset:hover{border-color:var(--chart)}
+  #copy:hover{filter:brightness(1.08)}
+  .field.set > summary:hover,.setlist label:hover{color:var(--fg)}
+}
 </style>
 </head>
 <body>
