@@ -93,6 +93,17 @@ Two behaviours worth knowing:
 - The full page always keeps the nearest zone visible even outside `range`, because a blank page reads as broken. The widget doesn't — an empty transparent panel is the correct output there.
 - When the fix is coarser than ±2 km the limits are ignored and everything is shown, because the ranking can't be trusted.
 
+## Running it locally
+
+Static files, no build step. Don't open them via `file://` — browsers block
+geolocation there.
+
+    python3 -m http.server 8080     # then http://localhost:8080
+
+For testing on a phone or in XCTrack you need https (a LAN IP won't do):
+publish to GitHub Pages, or tunnel with
+`cloudflared tunnel --url http://localhost:8080`.
+
 ## Editing the data
 
 Everything is in `hx/data.js`, one object per entry, documented at the top of the file.

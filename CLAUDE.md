@@ -4,6 +4,17 @@ Phone directory for Swiss HX airspaces. A pilot in flight taps one button to
 call the recorded line that says whether a CTR/TMA is active. Two views share
 one engine: `widget.html` (XCTrack web widget) and `app.html` (standalone).
 
+**Who it's for.** Swiss XC paraglider pilots who don't carry a VHF radio —
+which is most of them. HX airspaces legally allow a phone check of their status
+(VFR RAC 4-0-0-1 §0.2.2), and that is the only channel available to a pilot
+without a radio licence. Meant to be shared with other pilots, not private.
+
+**Conditions of use.** In the air, one-handed, in gloves, in bright sunlight,
+on a small screen, often with no data connection. Every design decision comes
+back to that: big tap targets, few results, no scrolling, no network, minimal
+battery draw. It exists to save one specific action — finding and dialling the
+right number fast — and should never grow into a general airspace app.
+
 - `docs/background.md` — sources, provenance of every number, prior art.
   Read before touching `hx/data.js`.
 - `docs/next-session.md` — the current investigation task, if one is open.
@@ -85,6 +96,23 @@ to them.
 5. **Upstream the data** to the SHV airspace DB (dominik@airriders.ch) rather
    than maintaining it alone, and check with luftraum@shv-fsvl.ch before
    publishing. Neither contacted yet.
+
+## Running it locally
+
+Pure static files, so any web server works. Do **not** open the pages via
+`file://` — browsers refuse geolocation there, so `app.html` can't get a fix.
+
+    cd hx-call && python3 -m http.server 8080     # then http://localhost:8080
+
+`localhost` counts as a secure context, so geolocation works. Any equivalent is
+fine (`npx serve`, `php -S localhost:8080`).
+
+Testing on the phone or in XCTrack is different: a LAN address like
+`http://192.168.x.x:8080` is **not** a secure context, so geolocation is
+blocked there. Either publish to GitHub Pages (the real target anyway) or open
+a temporary https tunnel, e.g. `cloudflared tunnel --url http://localhost:8080`.
+
+There is nothing to build, install or watch. Reload the page.
 
 ## Conventions
 
