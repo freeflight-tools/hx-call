@@ -123,6 +123,14 @@ Set `v:true` once you've confirmed a number against the aerodrome's AD INFO page
 
 Payerne, Dübendorf, Sion, Locarno, Lugano, St. Gallen, Grenchen and Les Eplatures are HX but their numbers aren't published openly — they're in the AD INFO pages of the eVFR Manual.
 
+## Contributing
+
+Found a wrong number, a missing zone, or a bug? [Open an issue](https://github.com/elgandoz/hx-call/issues), or send a pull request directly. Corrections to `hx/data.js` are the most useful kind — one entry per commit, with the source and the date you checked it.
+
+## Built with AI
+
+Most of the code here was written by an AI assistant, under human direction and review. The phone numbers are a separate matter: each one lists the source it came from, and any number not yet confirmed against the eVFR Manual is tagged **unverified** in the app. Judge the data on its sources, not on how the code was written.
+
 ## Disclaimer
 
 Unofficial. No warranty. Only the official publications (eVFR Manual, glider chart, DABS, NOTAM) have legal validity. You are responsible for your own flight preparation.
