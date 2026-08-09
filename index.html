@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0A1116">
 <title>HX Call — Swiss HX airspace phone directory</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-180.png">
 <link rel="stylesheet" href="hx/base.css">
 <style>
 body{background:var(--ink);padding:0 0 40px}
@@ -32,6 +35,11 @@ h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.12em;text-transform:upperca
 .field select{text-align:left}
 .field input[type=checkbox]{width:22px;height:22px;accent-color:var(--chart)}
 
+#reset{
+  width:100%;padding:10px;margin-top:12px;background:var(--panel-hi);
+  border:1px solid var(--rule);border-radius:3px;
+  color:var(--fg);font:600 .85em var(--sans);
+}
 #url{
   width:100%;padding:11px;margin-top:12px;background:var(--panel);color:var(--fg);
   border:1px solid var(--rule);border-radius:3px;
@@ -82,8 +90,9 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
     </a>
   </div>
 
-  <h2>Configure</h2>
+  <h2>Widget configurator</h2>
   <div id="fields"></div>
+  <button type="button" id="reset">Reset to defaults</button>
 
   <textarea id="url" rows="3" readonly></textarea>
   <button id="copy" type="button">Copy widget URL</button>
@@ -121,6 +130,7 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
 <script src="hx/data.js"></script>
 <script src="hx/core.js"></script>
 <script src="hx/qr.js"></script>
+<script src="hx/offline.js"></script>
 <script>
 "use strict";
 
@@ -161,6 +171,7 @@ function refreshLinks(){
 
 /* fields generated from HX.SPEC — same source as the app's settings sheet */
 const wrap = document.getElementById("fields");
+const loaders = [];
 for (const sp of HX.SPEC){
   const row = document.createElement("div");
   row.className = "field";
@@ -195,6 +206,7 @@ for (const sp of HX.SPEC){
     const v = HX.config[sp.key];
     if (sp.type === "bool") input.checked = !!v; else input.value = v;
   };
+  loaders.push(load);
   load();
 
   input.addEventListener("change", function(){
@@ -208,6 +220,12 @@ for (const sp of HX.SPEC){
   row.appendChild(input);
   wrap.appendChild(row);
 }
+
+document.getElementById("reset").addEventListener("click", function(){
+  HX.resetConfig();
+  for (const load of loaders) load();
+  refreshLinks();
+});
 
 document.getElementById("copy").addEventListener("click", function(){
   const btn = this;

@@ -26,6 +26,8 @@ hx/data.js      the zones          ← edit this
 hx/core.js      config, position, ranking, re-check clock
 hx/base.css     colour tokens, light/dark, shared primitives
 hx/qr.js        QR encoder, launcher page only — never loaded in flight
+hx/offline.js   registers the service worker, failures ignored on purpose
+sw.js           precaches everything so the list works with no signal
 ```
 
 No dependencies, no build step, no network at runtime. Any static host: GitHub Pages, Netlify, or a local file.
@@ -51,7 +53,15 @@ widget.html?lat=${lat}&lng=${lng}&max=3
 
 ## Standalone
 
-Open `app.html` in any browser and allow location when asked. Needs `https://`. On iOS, *Add to Home Screen* gives a full-screen launcher. Settings are in the sheet at the bottom of the page; they're saved and also written into the URL so you can share your setup.
+Open `app.html` in any browser and allow location when asked. Needs `https://`. Settings are in the sheet at the bottom of the page; they're saved and also written into the URL so you can share your setup.
+
+### On your phone
+
+Open the app and add it to the home screen — *Share → Add to Home Screen* on iOS, *⋮ → Add to Home screen* on Android. It launches full screen, without browser chrome, straight into the list.
+
+**It then works with no signal.** Everything is cached on first visit, so the numbers are there at 3000 m with no data connection, which is the point. Corrections still reach you: the cached copy is shown immediately and a fresh one is fetched in the background for next time, so an updated number arrives on the following launch rather than never.
+
+The widget caches itself the same way, though whether XCTrack's WebView allows it is untested — if it doesn't, the widget behaves exactly as before, online only. Offline is an enhancement here, never something the phone list depends on.
 
 ## Parameters
 

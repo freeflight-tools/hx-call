@@ -64,6 +64,14 @@ to them.
 
 ## Technical constraints
 
+- **Offline is served by `sw.js`, and it is an enhancement, not a dependency.**
+  Registration lives in `hx/offline.js` and swallows every failure, because an
+  old WebView without service workers must still get a working list. The
+  strategy is stale-while-revalidate on purpose: cache-first would mean a
+  corrected phone number could never reach a pilot who already has the page.
+  Entries are keyed on the path, not the full URL, or XCTrack's `?lat=…&lng=…`
+  reloads would miss the cache every time. Bump `CACHE` when the file list
+  changes.
 - **No dependencies, no build step, and the phone list works with no network.**
   It runs offline at 3000 m on a phone with no signal. Adding npm, a bundler or
   a CDN import defeats the design. Any geo library costs more than the ~20 lines
