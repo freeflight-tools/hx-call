@@ -83,8 +83,22 @@ to them.
   appears everywhere, already clamped. Never hand-write a settings field.
   `only:"widget"` marks one that applies to a single view: `app.html` skips it
   rather than showing a dead control, while the launcher keeps showing it
-  because that is where widget URLs are built. Anything reading `HX.SPEC` to
-  populate fields must tolerate a missing element.
+  because that is where widget URLs are built. `type:"set"` is a comma-separated
+  token list, rendered as a collapsed `<details>` of checkboxes — `""` is a
+  real value for it, so `clamp` handles sets before the empty-string guard or
+  the last box could never be unticked.
+- **`hx/fields.js` renders every settings control**, for both pages, from
+  `HX.SPEC`. It is the only DOM-touching shared file; core.js stays clean of
+  the DOM, which is what keeps the engine testable in node.
+- **`hide=` drops zones the pilot watches elsewhere** (`hide=brn,mei`, by id or
+  by a zone's `grp`). It is applied as a visibility rule, not a filter on the
+  dataset: excluded zones fail `strict` so the widget never draws them, while
+  `showAll` still reaches them in `app.html` — hidden in the air, never
+  unreachable while planning. `keepNearest` picks the nearest *non-hidden*
+  zone, or hiding one would drag it straight back. Deliberately still hidden
+  when inside its circle: the circles are oversized triage radii, so anything
+  else would defeat the feature for its main use. The live-status tools it
+  exists for need a data connection; this list does not.
 - **The widget's `<body>` must stay unpainted.** XCTrack renders a white or
   absent background as transparent so the widget floats over the map. Every
   chip carries its own background. Don't add a body background.

@@ -8,6 +8,8 @@
    p     phone digits for tel:  — omit entirely for "no number on file"
    s     phone number as displayed
    lat lon r   triage circle centre and radius in km
+   grp   optional group token, so a whole category (heliports, say) can be
+         switched off with one ?hide= token. Must not collide with any id
    rc    re-check: minutes, or an array of tape broadcast times "HH:MM"
    v     verified against the current AD INFO? set true once you check
    src   where the number came from

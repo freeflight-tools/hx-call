@@ -25,6 +25,7 @@ widget.html     widget view       (layout inline)
 hx/data.js      the zones          ← edit this
 hx/core.js      config, position, ranking, re-check clock
 hx/base.css     colour tokens, light/dark, shared primitives
+hx/fields.js    settings fields, generated from HX.SPEC for both pages
 hx/qr.js        QR encoder, launcher page only — never loaded in flight
 hx/offline.js   registers the service worker, failures ignored on purpose
 sw.js           precaches everything so the list works with no signal
@@ -78,6 +79,7 @@ Identical for both pages, and identical to the settings UI — the fields are ge
 | `theme=` | `auto` | `auto` follows the phone, or `dark` / `light` |
 | `nonum=` | `0` | `1` also shows zones whose number isn't known yet |
 | `valign=` | `top` | Widget only. `center` or `bottom` when you've reserved height for more results than are showing |
+| `hide=` | *(none)* | Zone ids to leave out, comma separated — `hide=brn,mei` |
 
 Position, if you want to supply it yourself:
 
@@ -113,6 +115,14 @@ Two behaviours worth knowing:
 - The app always keeps the nearest zone visible however far outside `range` it is, because a blank page reads as broken. Tap **SHOW ALL** for the rest. The widget does the opposite — an empty transparent panel is the correct output there, so it disappears rather than clutter the map.
 - When the fix is coarser than ±2 km the limits are ignored and everything is shown, because the ranking can't be trusted.
 - The widget shows nothing at all until it has a position — while the GPS is still acquiring, or if the placeholders were never substituted. Ranking nothing is better than covering the map with buttons in no useful order.
+
+## Hiding zones you watch another way
+
+If you already follow Bern on `bern.pdcs.ch`, or Bern and Meiringen on `pgairspace.ch`, those entries are just noise on your screen. Open **Hidden zones** in the settings and tick them, or pass `hide=brn,mei`.
+
+The widget then never draws them, even when you're inside their circle — that's the point, and it's what makes the setting worth having. The app still lists them behind **SHOW ALL**, so nothing is unreachable while you're planning.
+
+Worth thinking about once: those live tools need a data connection and this one doesn't. Hide a zone because you're actively watching it somewhere else, not just to shorten the list.
 
 ## Running it locally
 

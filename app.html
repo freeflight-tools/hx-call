@@ -107,6 +107,21 @@ main{padding:8px 8px 4px}
 }
 .field select{text-align:left}
 .field input[type=checkbox]{width:22px;height:22px;accent-color:var(--chart)}
+
+/* the hide list: collapsed, so thirteen zones cost one row until wanted */
+.field.set{display:block;position:relative}
+.field.set > summary{
+  list-style:none;cursor:pointer;font-size:.9em;display:block;
+}
+.field.set > summary::-webkit-details-marker{display:none}
+.field.set > summary::after{content:"▸";position:absolute;right:0;top:0;color:var(--dim)}
+.field.set[open] > summary::after{content:"▾"}
+.field.set small{display:block;color:var(--dim);font-size:.76em;font-weight:400}
+.setlist{display:flex;flex-direction:column;gap:9px;padding:11px 0 2px}
+.setlist label{display:flex;align-items:center;gap:9px;font-size:.85em;line-height:1.25}
+.setlist input{width:20px;height:20px;flex:none;accent-color:var(--chart)}
+.setlist i{font-style:normal;color:var(--dim);font-size:.78em;margin-left:auto;flex:none}
+
 .sheetfoot{display:flex;gap:8px;padding:0 12px 14px}
 .sheetfoot button,.sheetfoot a{
   flex:1;padding:10px;text-align:center;text-decoration:none;
@@ -140,6 +155,7 @@ footer{padding:12px 10px;color:var(--dim);font-size:.72em;line-height:1.5;font-f
 
 <script src="hx/data.js"></script>
 <script src="hx/core.js"></script>
+<script src="hx/fields.js"></script>
 <script src="hx/offline.js"></script>
 <script>
 "use strict";
@@ -153,65 +169,18 @@ const made   = {};
 
 /* ── settings sheet, generated from HX.SPEC so it can never drift ── */
 (function settings(){
-  const wrap = document.getElementById("fields");
-  for (const sp of HX.SPEC){
-    if (sp.only === "widget") continue;      // nothing it could do on this page
-    const row = document.createElement("div");
-    row.className = "field";
-
-    const lab = document.createElement("label");
-    lab.htmlFor = "f_" + sp.key;
-    lab.appendChild(document.createTextNode(sp.label + (sp.unit ? " (" + sp.unit + ")" : "")));
-    const hint = document.createElement("small");
-    hint.textContent = sp.hint;
-    lab.appendChild(hint);
-    row.appendChild(lab);
-
-    let input;
-    if (sp.type === "enum"){
-      input = document.createElement("select");
-      for (const o of sp.options){
-        const op = document.createElement("option");
-        op.value = o; op.textContent = o;
-        input.appendChild(op);
-      }
-    } else if (sp.type === "bool"){
-      input = document.createElement("input");
-      input.type = "checkbox";
-    } else {
-      input = document.createElement("input");
-      input.type = "number";
-      input.min = sp.min; input.max = sp.max; input.inputMode = "numeric";
-    }
-    input.id = "f_" + sp.key;
-
-    const load = function(){
-      const v = HX.config[sp.key];
-      if (sp.type === "bool") input.checked = !!v; else input.value = v;
-    };
-    load();
-
-    input.addEventListener("change", function(){
-      const patch = {};
-      patch[sp.key] = sp.type === "bool" ? (input.checked ? 1 : 0) : input.value;
-      HX.setConfig(patch);
-      load();                       // reflect clamping back to the field
-      document.getElementById("towidget").href = HX.buildUrl("widget.html");
-    });
-
-    row.appendChild(input);
-    wrap.appendChild(row);
-  }
+  const relink = function(){
+    document.getElementById("towidget").href = HX.buildUrl("widget.html");
+  };
+  const fields = HX.fields(document.getElementById("fields"), {
+    skipWidgetOnly: true,               // valign does nothing on this page
+    onChange: relink
+  });
 
   document.getElementById("reset").addEventListener("click", function(){
     HX.resetConfig();
-    for (const sp of HX.SPEC){
-      const el = document.getElementById("f_" + sp.key);
-      if (!el) continue;                     // widget-only, not on this page
-      if (sp.type === "bool") el.checked = !!HX.config[sp.key];
-      else el.value = HX.config[sp.key];
-    }
-    document.getElementById("towidget").href = HX.buildUrl("widget.html");
+    fields.reload();
+    relink();
   });
 })();
 

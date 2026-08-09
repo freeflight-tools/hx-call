@@ -34,7 +34,9 @@ const SPEC = [
   {key:"theme",   type:"enum", options:["auto","dark","light"], def:"auto", label:"Theme", hint:"Auto follows your phone"},
   {key:"nonum",   type:"bool", def:0,          label:"Also show zones without a number", hint:"HX zones whose number isn't known yet — nothing to dial"},
   {key:"valign",  type:"enum", options:["top","center","bottom"], def:"top", only:"widget",
-   label:"Vertical position", hint:"Where the chips sit when the widget is taller than the results"}
+   label:"Vertical position", hint:"Where the chips sit when the widget is taller than the results"},
+  {key:"hide",    type:"set",  def:"",
+   label:"Hidden zones", hint:"Zones you already watch another way. Still listed under SHOW ALL"}
 ];
 
 /* `only` marks a parameter that belongs to one view. app.html skips the
@@ -88,6 +90,24 @@ function pairOf(v){
 }
 
 function clamp(spec, raw){
+  /* A set is checked before the empty-string guard below: "" is a real
+     value here — nothing hidden — and rejecting it would make the last
+     box impossible to untick, since setConfig skips nulls.
+
+     Unknown tokens are kept rather than dropped. A URL built against a
+     newer data.js then survives a round trip through an older one instead
+     of quietly losing what someone chose to hide. */
+  if (spec.type === "set"){
+    if (raw === null || raw === undefined) return null;
+    const seen = {}, out = [];
+    for (const t of String(raw).split(",")){
+      const s = t.trim();
+      if (!s || seen[s]) continue;
+      seen[s] = true;
+      out.push(s);
+    }
+    return out.join(",");
+  }
   if (raw === null || raw === undefined || raw === "") return null;
   if (spec.type === "enum")
     return spec.options.indexOf(String(raw)) >= 0 ? String(raw) : null;
@@ -140,6 +160,7 @@ function parseUrlFix(){
 
 let cfg      = loadConfig();
 let zones    = [];
+let hideSet  = {};          // id or group -> true, from the hide parameter
 let urlFix   = parseUrlFix();
 const PINNED = !!(urlFix && urlFix.pin);
 
@@ -154,8 +175,22 @@ let fix = null, fixSrc = "", geoState = "";
 let watchId = null, timer = null, showAll = false;
 let onUpdate = null, keepNearest = true;
 
+function parseHide(s){
+  const out = {};
+  for (const t of String(s || "").split(",")) if (t) out[t] = true;
+  return out;
+}
+
 function selectZones(){
   zones = (global.HX_ZONES || []).filter(function(z){ return cfg.nonum || z.p; });
+  hideSet = parseHide(cfg.hide);
+}
+
+/* A zone is hidden by its own id or by its group, so a future `grp:"heli"`
+   can be switched off with one token instead of a dozen. Group names must
+   not collide with zone ids — they share this one namespace. */
+function isHidden(z){
+  return hideSet[z.id] === true || (!!z.grp && hideSet[z.grp] === true);
 }
 
 /* ── position ─────────────────────────────────────────────────────── */
@@ -266,19 +301,29 @@ function compute(){
       compass: fix ? COMPASS[(Math.round(b / 45) + 8) & 7] : "",
       inside: d !== null && d <= 0,
       state:v.state, until:v.until,
+      excluded: isHidden(z),
       k:0, strict:true, visible:true
     });
   }
 
   if (fix) rows.sort(function(a,b){ return a.dist - b.dist; });
 
+  /* keepNearest holds the closest zone the pilot has *not* switched off,
+     so hiding Bern cannot drag Bern back the moment nothing else is in
+     range. */
+  let nearestKept = -1;
+  rows.forEach(function(r, k){ if (nearestKept < 0 && !r.excluded) nearestKept = k; });
+
   let hidden = 0, shown = 0;
   rows.forEach(function(r, k){
     r.k = k;
     // without a trustworthy fix the limits are ignored: hiding zones
-    // confidently on a bad position is worse than a longer list
-    r.strict  = !trust || showAll || (k < cfg.max && r.dist <= cfg.range);
-    r.visible = r.strict || (keepNearest && k === 0);
+    // confidently on a bad position is worse than a longer list.
+    // Excluded zones fail `strict`, so the widget never draws them, while
+    // SHOW ALL still reaches them in app.html — hidden in the air, never
+    // unreachable while planning.
+    r.strict  = showAll || (!r.excluded && (!trust || (k < cfg.max && r.dist <= cfg.range)));
+    r.visible = r.strict || (keepNearest && k === nearestKept);
     if (r.visible) shown++; else hidden++;
   });
 
@@ -361,6 +406,12 @@ const HX = {
       if (PARAMS.get(k)) qs.push(k + "=" + encodeURIComponent(PARAMS.get(k)));
     try { history.replaceState(null, "", location.pathname + (qs.length ? "?" + qs.join("&") : "")); } catch(e){}
   },
+
+  /* Which ids and groups the hide parameter names, for the settings UI to
+     tick its boxes against. Derived from cfg rather than the cached map,
+     because the settings render before start() has ever called
+     selectZones() and would otherwise show everything unticked. */
+  hideSet: function(){ return parseHide(cfg.hide); },
 
   markCalled: function(id){ store.s("hx" + id, String(Date.now())); emit(); },
   clearCall:  function(id){ store.d("hx" + id); emit(); },
