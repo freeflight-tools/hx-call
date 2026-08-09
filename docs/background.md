@@ -58,6 +58,9 @@ still works. Record which was done, and when.
 | Bern CTR + TMA sectors | 022 417 40 76 | SHV, procedure valid from 19.03.2026. ATIS, radio 125.130. |
 | Basel TMA Tango T1–T3 | 061 325 34 67 | Luftraumbroschüre 2026. Tape also on 134.680. |
 | Zürich TMA Sierra S1–S3 | 043 816 22 95 | Luftraumbroschüre 2026. **Confirmed by call, 09.08.2026** — reached the recorded status line. First verified entry. |
+| Locarno CTR + TMA | 091 816 17 44 | SHV *TMA Locarno Statusinfo*, 14.07.2016 upd. 22.07.2019. Named there as the **only legally binding** source together with ATIS 133.450. Six years old — recheck. |
+| Sion CTR | 022 417 40 80 | Sion Airport pilot info page, 09.08.2026, listed as the ATIS phone beside ATIS 130.630. CTR only; the Sion TMAs are TEMPO. |
+| Grenchen CTR + TMA | 032 396 69 00 | Delta Club Weissenstein airspace page, 09.08.2026. **The tower, not a tape** — a controller answers, and entering an active CTR needs a clearance they may refuse. Radio 120.105. |
 
 Note the Basel info frequency moved from 134.675 to 134.680 at some point, and
 Emmen TWR from 120.425 to 118.000 in March 2023 — figures in older PDFs are
@@ -67,11 +70,27 @@ verifying a number against a source.
 
 ### Still missing
 
-Payerne, Dübendorf, Sion, Locarno, Lugano, St. Gallen-Altenrhein, Grenchen,
-Les Eplatures. Not published on the open web. They're in the AD INFO pages of
-the eVFR Manual — subscription at skybriefing.com, around CHF 49/yr. That
-subscription is the single highest-value purchase for this project: it fills
-the gaps *and* verifies the five above.
+Payerne, Dübendorf, Lugano, St. Gallen-Altenrhein, Les Eplatures — five of the
+original eight, after the search of 09.08.2026 turned up Locarno, Sion and
+Grenchen. The remainder are in the AD INFO pages of the eVFR Manual —
+subscription at skybriefing.com, around CHF 49/yr. That subscription is still
+the single highest-value purchase for this project: it fills the gaps *and*
+verifies everything above.
+
+**Payerne and Dübendorf are military** (LSMP, LSMD), so nothing is likely to
+appear on the open web at all; the eVFR Manual or a direct call to the
+aerodrome are the realistic routes.
+
+**Skyguide runs a bank of ATIS-by-phone numbers on `022 417 40 xx`** — Bern is
+`…76`, Sion `…80`. Lugano and St. Gallen-Altenrhein are Skyguide aerodromes and
+plausibly sit in the same block, but no published list of it was found, and
+guessing the last two digits of a safety-critical number is not acceptable.
+Someone with the eVFR Manual can read them off in a minute.
+
+Where the search looked, so nobody repeats it: SHV's `CTRTMA` document folder
+(no directory listing, and guessed filenames for the other zones all 404),
+club airspace pages, the aerodrome operators' own pilot pages, and general web
+search in German, French and Italian.
 
 ## Circle geometry
 
