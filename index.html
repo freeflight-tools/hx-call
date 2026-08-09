@@ -60,6 +60,12 @@ h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.12em;text-transform:upperca
 .qr small{color:var(--dim);font-size:.78em;line-height:1.4;text-align:center}
 ol{margin:0;padding-left:1.2em;font-size:.9em;line-height:1.6;color:var(--dim)}
 ol b{color:var(--fg)}
+.note{
+  margin:12px 0 0;padding:10px 12px;background:var(--panel);
+  border:1px solid var(--rule);border-radius:3px;
+  color:var(--dim);font-size:.84em;line-height:1.5;
+}
+.note b{color:var(--fg)}
 .warn{
   margin:20px 0 0;padding:10px 12px;background:var(--amber-bg);
   border:1px solid var(--amber-line);border-radius:3px;
@@ -86,7 +92,7 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
     </a>
     <a id="towidget" href="widget.html">
       <b>Widget →</b>
-      <span>Compact transparent buttons for the XCTrack Web page widget.</span>
+      <span>Compact transparent buttons for the XCTrack Web page widget. Blank unless something is in range.</span>
     </a>
   </div>
 
@@ -111,6 +117,14 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
     <li>Turn on <b>Disable unlocking</b> so a stray swipe doesn't rearrange it.</li>
     <li>Set <b>refresh rate to 0</b> — the page updates itself.</li>
   </ol>
+
+  <p class="note">
+    <b>An empty widget is normal.</b> It draws nothing while the GPS is still
+    getting a fix, and nothing when no zone is within range, so it stays out of
+    your way until it has something to say. The app never goes blank: it keeps
+    the nearest zone on screen however far away it is, because there a blank
+    page just reads as broken.
+  </p>
 
   <p class="warn">
     This is a phone directory, not an airspace tool. It has no boundaries and no

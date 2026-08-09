@@ -110,7 +110,7 @@ Turn it on if you want them, but either way **read the airspace off your flight 
 
 Two behaviours worth knowing:
 
-- The full page always keeps the nearest zone visible even outside `range`, because a blank page reads as broken. The widget doesn't — an empty transparent panel is the correct output there.
+- The app always keeps the nearest zone visible however far outside `range` it is, because a blank page reads as broken. Tap **SHOW ALL** for the rest. The widget does the opposite — an empty transparent panel is the correct output there, so it disappears rather than clutter the map.
 - When the fix is coarser than ±2 km the limits are ignored and everything is shown, because the ranking can't be trusted.
 - The widget shows nothing at all until it has a position — while the GPS is still acquiring, or if the placeholders were never substituted. Ranking nothing is better than covering the map with buttons in no useful order.
 
