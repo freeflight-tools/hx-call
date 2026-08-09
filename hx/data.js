@@ -79,8 +79,9 @@ window.HX_ZONES = [
   note:"See LSZR AD INFO. Note the cross-border TMZ with Friedrichshafen."},
 
  {id:"gre", n:"Grenchen CTR + TMA", sn:"GRENCHEN", w:"Weissenstein, Jurasüdfuss",
-  lat:47.182, lon:7.417, r:14,
-  note:"An RMZ of the same lateral size applies below 600 m AGL when the CTR is off. Keep 5 km from the runways regardless."},
+  p:"+41323966900", s:"032 396 69 00", lat:47.182, lon:7.417, r:14,
+  rc:30, v:false, src:"DC Weissenstein, 09.08.2026",
+  note:"This one is the tower, not a tape - a controller answers. Inside an active CTR you need a clearance, and they can refuse it or attach conditions. An RMZ of the same lateral size applies below 600 m AGL when the CTR is off. Keep 5 km from the runways regardless."},
 
  {id:"epl", n:"Les Eplatures CTR + TMA", sn:"EPLATURES", w:"Neuchâtel Jura, Chasseral",
   lat:47.084, lon:6.793, r:14, note:"See LSGC AD INFO."}
