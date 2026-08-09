@@ -65,6 +65,12 @@
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
+/* The pages hide elements with the `hidden` property, which the browser
+   applies as a low-priority [hidden]{display:none}. Any author rule that
+   sets `display` — an id selector, or `all:unset` — silently outranks it
+   and the element stays on screen. Restate it here so `hidden` always wins. */
+[hidden]{display:none !important}
+
 html,body{
   margin:0;
   color:var(--fg);
