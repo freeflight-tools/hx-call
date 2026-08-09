@@ -69,7 +69,9 @@ window.HX_ZONES = [
   note:"CTR only - the Sion TMAs are TEMPO and come with your airspace update."},
 
  {id:"loc", n:"Locarno CTR + TMA", sn:"LOCARNO", w:"Maggiatal, Centovalli",
-  lat:46.161, lon:8.879, r:16, note:"See LSMO AD INFO."},
+  p:"+41918161744", s:"091 816 17 44", lat:46.161, lon:8.879, r:16,
+  rc:30, v:false, src:"SHV TMA Locarno Statusinfo (22.07.2019)",
+  note:"ATIS tape, and the only legally binding source. \"Tower and Flight Information Service not active\" or \"Flight Information Service active\" both mean CTR and TMA are off; \"Control Zone active\" is the CTR only; \"Control Zone and Terminal Area active\" is both. The club's Facebook forecast is informational only."},
 
  {id:"lug", n:"Lugano CTR + TMA", sn:"LUGANO", w:"Malcantone, Monte Tamaro",
   lat:46.004, lon:8.910, r:16, note:"See LSZA AD INFO."},
