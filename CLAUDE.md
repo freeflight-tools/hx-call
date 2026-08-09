@@ -1,0 +1,94 @@
+# HX Call
+
+Phone directory for Swiss HX airspaces. A pilot in flight taps one button to
+call the recorded line that says whether a CTR/TMA is active. Two views share
+one engine: `widget.html` (XCTrack web widget) and `app.html` (standalone).
+
+- `docs/background.md` — sources, provenance of every number, prior art.
+  Read before touching `hx/data.js`.
+- `docs/next-session.md` — the current investigation task, if one is open.
+
+## Where this fits
+
+Two other projects already show **live** status for some zones by reading the
+ATIS, which is strictly better than a phone number where it works:
+`bern.pdcs.ch` (Bern) and `pgairspace.ch` "HX Monitor" (Bern, Meiringen —
+built by a friend of the owner). Both need a data connection.
+
+HX Call's distinct value is therefore: **the eleven zones nobody has
+automated**, and **working with no connectivity at all**. Treat those two as
+the product. Don't try to out-compete the live-status tools; if anything, link
+to them.
+
+## Safety rules — do not relax these
+
+- **The circles in `hx/data.js` are not airspace boundaries.** They are
+  deliberately oversized triage radii. Never tighten one to "improve accuracy",
+  and never present them as boundaries. An extra entry on screen costs nothing;
+  a missing one costs an airspace violation.
+- **Never delete a zone that has no phone number.** They render as "no number on
+  file" on purpose. A missing entry reads as "no HX here", which is the
+  dangerous failure. `nonum=0` hides them; that is the user's choice to make.
+- **Never set `v:true`** on a zone unless the number was actually checked
+  against that aerodrome's AD INFO page in the current eVFR Manual. `v:false`
+  renders a red "unverified" tag. That tag is the point.
+- **Keep the "if you can't confirm the status, the airspace is active" line**
+  visible in `app.html`. It is the legal default under VFR RAC 4-0-0-1 §0.2.2.
+- The re-check clock is not a nicety. §0.2.3 expects continuous awareness of
+  status changes, not one check. Meiringen follows its tape schedule, Bern is
+  15 min, others default to 30. Don't lengthen these.
+- **Any live-status feature is an optional enhancement layer, never a
+  dependency.** If a zone's live status can't be fetched, its phone entry must
+  still render exactly as it does today. Stale live data must announce itself
+  (bern.pdcs.ch goes red after 4 minutes without a connection — copy that), and
+  must never suppress the phone number.
+
+## Technical constraints
+
+- **No dependencies, no build step, and the phone list works with no network.**
+  It runs offline at 3000 m on a phone with no signal. Adding npm, a bundler or
+  a CDN import defeats the design. Any geo library costs more than the ~20 lines
+  of maths it would replace.
+- **`hx/core.js` touches no DOM and renders nothing.** It hands pages a state
+  object; pages only draw. This is what keeps the two views from drifting.
+- **`HX.SPEC` is the single source of truth** for URL parameters *and* the
+  settings UI in both `app.html` and `index.html`. Add a parameter there and it
+  appears everywhere, already clamped. Never hand-write a settings field.
+- **The widget's `<body>` must stay unpainted.** XCTrack renders a white or
+  absent background as transparent so the widget floats over the map. Every
+  chip carries its own background. Don't add a body background.
+- **The widget renders nothing when nothing is in range** (`keepNearest:false`).
+  An empty transparent panel is correct output there. `app.html` keeps the
+  nearest entry instead, because a blank page reads as broken.
+- **Minimise DOM writes.** Elements are built once and reused; each update
+  writes only text nodes whose value changed, and reorders only when the sort
+  order changed. A stationary pilot should cause zero writes.
+- Default poll is 30 s. Don't lower it — battery matters more than freshness
+  for data that changes on a 15–30 minute cycle.
+- `localStorage` is always accessed through the guarded wrapper in `core.js`.
+  It is load-bearing: with `${lat}/${lng}` substitution XCTrack reloads the
+  whole page periodically, and this is what carries the re-check clock across.
+- Plain ES5-compatible JS, no modules, no transpilation. Old Android WebViews.
+
+## Open threads
+
+1. **Eight numbers are missing** — Payerne, Dübendorf, Sion, Locarno, Lugano,
+   St. Gallen, Grenchen, Les Eplatures. They live in the AD INFO pages of the
+   eVFR Manual (skybriefing, ~CHF 49/yr). Not on the open web.
+2. **Every number is unverified.** All five need checking against current
+   AD INFO before this is shared with anyone.
+3. **Untested on device: does XCTrack's WebView honour `tel:` links?** Some
+   Android WebViews swallow non-http schemes. If it fails, the standalone page
+   becomes the workaround and it's worth reporting to the XCTrack devs.
+4. **Live status.** See `docs/next-session.md`. Ask the friend who built
+   pgairspace.ch before reverse-engineering anything.
+5. **Upstream the data** to the SHV airspace DB (dominik@airriders.ch) rather
+   than maintaining it alone, and check with luftraum@shv-fsvl.ch before
+   publishing. Neither contacted yet.
+
+## Conventions
+
+- Data edits go in `hx/data.js` only. One entry per commit, with the source and
+  the date checked.
+- `sn` (widget short name) stays under ~14 characters.
+- The README is written for pilots, not developers. Keep it scannable.

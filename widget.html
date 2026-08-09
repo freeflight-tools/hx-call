@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HX Call — widget</title>
+<link rel="stylesheet" href="hx/base.css">
+<style>
+/* ── widget-only layout ────────────────────────────────────────────
+   XCTrack renders a white or absent background as transparent, so the
+   page body must stay unpainted and every chip carries its own solid
+   background. Chips are outlined so they read over any map. */
+
+html,body{background:transparent}
+body{padding:2px}
+
+#grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(calc(112px * var(--scale)),1fr));
+  gap:calc(3px * var(--scale));
+  align-content:start;
+}
+
+.chip{
+  display:block;text-decoration:none;color:var(--fg);
+  background:var(--panel);
+  border:1px solid var(--rule);
+  border-left:calc(3px * var(--scale)) solid var(--chart);
+  border-radius:3px;
+  padding:calc(4px * var(--scale)) calc(5px * var(--scale));
+  box-shadow:0 1px 3px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+.chip.fresh{border-left-color:var(--green)}
+.chip.due{border-left-color:var(--amber)}
+.chip.na{border-left-color:var(--dim);opacity:.8}
+
+.top{display:flex;align-items:baseline;gap:calc(4px * var(--scale))}
+.nm{
+  flex:1;min-width:0;
+  font-size:calc(11px * var(--scale));font-weight:800;line-height:1.1;
+  letter-spacing:.02em;
+}
+.km{
+  flex:none;font-family:var(--mono);
+  font-size:calc(13px * var(--scale));font-weight:700;line-height:1;
+}
+.chip.inside .km{color:var(--amber)}
+.km s{text-decoration:none;font-size:.62em;font-weight:400;color:var(--dim);margin-left:1px}
+
+.ph{
+  display:block;margin-top:calc(2px * var(--scale));
+  font-family:var(--mono);font-size:calc(9px * var(--scale));
+  color:var(--dim);line-height:1.1;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.ph.due{color:var(--amber);font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- Widget view. Nothing renders when nothing is in range — an empty
+     transparent panel is the correct output, not an error. -->
+
+<div id="grid"></div>
+
+<script src="hx/data.js"></script>
+<script src="hx/core.js"></script>
+<script>
+"use strict";
+
+const grid = document.getElementById("grid");
+const made = {};                 // id -> {el, nm, km, ph, lastCls, lastKm, lastPh}
+
+function chipFor(z){
+  if (made[z.id]) return made[z.id];
+
+  const el = document.createElement(z.p ? "a" : "div");
+  el.className = "chip";
+  if (z.p){
+    el.href = "tel:" + z.p;
+    el.addEventListener("click", function(){ HX.markCalled(z.id); });
+  }
+
+  const top = document.createElement("div");
+  top.className = "top";
+  const nm = document.createElement("span");
+  nm.className = "nm"; nm.textContent = z.sn || z.n;
+  const km = document.createElement("span");
+  km.className = "km";
+  km.innerHTML = '<b></b><s>km</s>';
+  top.appendChild(nm); top.appendChild(km);
+
+  const ph = document.createElement("span");
+  ph.className = "ph";
+  ph.textContent = z.p ? z.s : "no number";
+
+  el.appendChild(top); el.appendChild(ph);
+  return (made[z.id] = {
+    el:el, km:km.querySelector("b"), ph:ph,
+    lastCls:"", lastKm:"", lastPh:""
+  });
+}
+
+HX.start(function(st){
+  const vis = st.rows.filter(function(r){ return r.strict; });
+
+  // reorder / insert only what changed
+  let n = 0;
+  for (const r of vis){
+    const c = chipFor(r.z);
+    if (grid.children[n] !== c.el) grid.insertBefore(c.el, grid.children[n] || null);
+    n++;
+
+    const kmTxt = st.fix ? HX.fmtShort(r.dist) : "";
+    if (c.lastKm !== kmTxt){ c.km.textContent = kmTxt; c.lastKm = kmTxt; }
+
+    // the phone line doubles as the re-check warning
+    const phTxt = !r.z.p ? "no number"
+                : r.state === "due"   ? "RE-CHECK " + r.until
+                : r.state === "fresh" ? r.z.s + "  ✓" + r.until
+                : r.z.s;
+    if (c.lastPh !== phTxt){
+      c.ph.textContent = phTxt;
+      c.ph.className = "ph" + (r.state === "due" ? " due" : "");
+      c.lastPh = phTxt;
+    }
+
+    const cls = "chip"
+      + (r.z.p ? "" : " na")
+      + (r.state !== "none" ? " " + r.state : "")
+      + (r.inside ? " inside" : "");
+    if (c.lastCls !== cls){ c.el.className = cls; c.lastCls = cls; }
+  }
+
+  // drop anything no longer in range
+  while (grid.children.length > n) grid.removeChild(grid.lastChild);
+
+}, {keepNearest:false});
+</script>
+</body>
+</html>

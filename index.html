@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A1116">
+<title>HX Call — Swiss HX airspace phone directory</title>
+<link rel="stylesheet" href="hx/base.css">
+<style>
+body{background:var(--ink);padding:0 0 40px}
+.wrap{max-width:640px;margin:0 auto;padding:20px 14px}
+h1{margin:0 0 4px;font-size:1.5em;letter-spacing:-.01em}
+.sub{margin:0 0 20px;color:var(--dim);font-size:.92em;line-height:1.5}
+h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+
+.pick{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+.pick a{
+  display:block;padding:14px;background:var(--panel);border:1px solid var(--rule);
+  border-radius:4px;text-decoration:none;color:var(--fg);box-shadow:var(--shadow);
+}
+.pick b{display:block;font-size:1em;margin-bottom:3px}
+.pick span{display:block;font-size:.8em;color:var(--dim);line-height:1.4}
+
+.field{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.field label{flex:1;min-width:0;font-size:.92em}
+.field label small{display:block;color:var(--dim);font-size:.8em}
+.field input[type=number],.field select{
+  width:96px;padding:9px;background:var(--panel);color:var(--fg);
+  border:1px solid var(--rule);border-radius:3px;
+  font:600 1em var(--mono);text-align:right;
+}
+.field select{text-align:left}
+.field input[type=checkbox]{width:22px;height:22px;accent-color:var(--chart)}
+
+#url{
+  width:100%;padding:11px;margin-top:12px;background:var(--panel);color:var(--fg);
+  border:1px solid var(--rule);border-radius:3px;
+  font:400 .85em var(--mono);word-break:break-all;resize:none;
+}
+#copy{
+  width:100%;padding:12px;margin-top:8px;background:var(--chart);border:0;
+  border-radius:3px;color:#fff;font:700 .95em var(--sans);
+}
+ol{margin:0;padding-left:1.2em;font-size:.9em;line-height:1.6;color:var(--dim)}
+ol b{color:var(--fg)}
+.warn{
+  margin:20px 0 0;padding:10px 12px;background:var(--amber-bg);
+  border:1px solid var(--amber-line);border-radius:3px;
+  color:var(--amber);font-size:.82em;line-height:1.45;
+}
+footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>HX Call</h1>
+  <p class="sub">
+    Phone numbers for Swiss <b>HX</b> airspaces, sorted by how close you are.
+    HX means no fixed operating hours — the zone can be activated at 30 minutes'
+    notice, and you're allowed to check its status by phone. Useful if you don't
+    carry a VHF radio.
+  </p>
+
+  <div class="pick">
+    <a id="toapp" href="app.html">
+      <b>Full page →</b>
+      <span>Names, distances, notes, settings. For planning and for phones.</span>
+    </a>
+    <a id="towidget" href="widget.html">
+      <b>Widget →</b>
+      <span>Compact transparent buttons for the XCTrack Web page widget.</span>
+    </a>
+  </div>
+
+  <h2>Configure</h2>
+  <div id="fields"></div>
+
+  <textarea id="url" rows="3" readonly></textarea>
+  <button id="copy" type="button">Copy widget URL</button>
+
+  <h2>Add it to XCTrack</h2>
+  <ol>
+    <li>Add a <b>Web page</b> widget and paste the URL above.</li>
+    <li>Turn on <b>Allow web page to access XCTrack data</b> — this is what gives it your position.</li>
+    <li>Turn on <b>Allow tapping on the web page when locked</b>, or you can't press the call button in flight.</li>
+    <li>Turn on <b>Disable unlocking</b> so a stray swipe doesn't rearrange it.</li>
+    <li>Set <b>refresh rate to 0</b> — the page updates itself.</li>
+  </ol>
+
+  <p class="warn">
+    This is a phone directory, not an airspace tool. It has no boundaries and no
+    altitudes — use your flight computer for those. Numbers marked
+    <b>unverified</b> still need checking against the current eVFR Manual.
+    If you can't confirm a status, the airspace is active.
+  </p>
+
+  <footer>
+    Unofficial, no warranty. Only the official publications (eVFR Manual, glider
+    chart, DABS, NOTAM) have legal validity. You are responsible for your own
+    flight preparation.
+  </footer>
+
+</div>
+
+<script src="hx/data.js"></script>
+<script src="hx/core.js"></script>
+<script>
+"use strict";
+
+HX.applyTheme();
+
+const urlBox = document.getElementById("url");
+
+function refreshLinks(){
+  const w = HX.buildUrl("widget.html");
+  const a = HX.buildUrl("app.html");
+  document.getElementById("towidget").href = w;
+  document.getElementById("toapp").href = a;
+  urlBox.value = new URL(w, location.href).href;
+}
+
+/* fields generated from HX.SPEC — same source as the app's settings sheet */
+const wrap = document.getElementById("fields");
+for (const sp of HX.SPEC){
+  const row = document.createElement("div");
+  row.className = "field";
+
+  const lab = document.createElement("label");
+  lab.htmlFor = "f_" + sp.key;
+  lab.appendChild(document.createTextNode(sp.label + (sp.unit ? " (" + sp.unit + ")" : "")));
+  const hint = document.createElement("small");
+  hint.textContent = sp.hint;
+  lab.appendChild(hint);
+  row.appendChild(lab);
+
+  let input;
+  if (sp.type === "enum"){
+    input = document.createElement("select");
+    for (const o of sp.options){
+      const op = document.createElement("option");
+      op.value = o; op.textContent = o;
+      input.appendChild(op);
+    }
+  } else if (sp.type === "bool"){
+    input = document.createElement("input");
+    input.type = "checkbox";
+  } else {
+    input = document.createElement("input");
+    input.type = "number";
+    input.min = sp.min; input.max = sp.max; input.inputMode = "numeric";
+  }
+  input.id = "f_" + sp.key;
+
+  const load = function(){
+    const v = HX.config[sp.key];
+    if (sp.type === "bool") input.checked = !!v; else input.value = v;
+  };
+  load();
+
+  input.addEventListener("change", function(){
+    const patch = {};
+    patch[sp.key] = sp.type === "bool" ? (input.checked ? 1 : 0) : input.value;
+    HX.setConfig(patch);
+    load();
+    refreshLinks();
+  });
+
+  row.appendChild(input);
+  wrap.appendChild(row);
+}
+
+document.getElementById("copy").addEventListener("click", function(){
+  const btn = this;
+  const done = function(){
+    btn.textContent = "Copied";
+    setTimeout(function(){ btn.textContent = "Copy widget URL"; }, 1600);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(urlBox.value).then(done, function(){ urlBox.select(); });
+  } else {
+    urlBox.select(); try { document.execCommand("copy"); done(); } catch(e){}
+  }
+});
+
+refreshLinks();
+</script>
+</body>
+</html>

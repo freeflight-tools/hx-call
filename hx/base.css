@@ -1,0 +1,94 @@
+/* ══════════════════════════════════════════════════════════════════════
+   HX CALL — shared tokens and primitives.
+   Page-specific layout stays inline in each page.
+
+   Theme: light by default, dark when the phone asks for it, forced by
+   <html data-theme="dark|light"> which HX.applyTheme() sets from ?theme=.
+   --scale is set from ?size= (0-100 -> 1.0-2.0).
+   ══════════════════════════════════════════════════════════════════ */
+
+:root{
+  --scale:1;
+
+  /* light */
+  --ink:#F4F6F8;
+  --panel:#FFFFFF;
+  --panel-hi:#EDF2F6;
+  --rule:#CBD6DE;
+  --fg:#0F1A21;
+  --dim:#5C7180;
+  --chart:#1E6FA8;
+  --amber:#A96608;
+  --red:#B3271C;
+  --green:#22794B;
+  --amber-bg:#FDF3E0;
+  --amber-line:#E8CFA0;
+  --shadow:0 1px 2px rgba(15,26,33,.10);
+
+  --mono:ui-monospace,"Roboto Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#0A1116;
+    --panel:#151F27;
+    --panel-hi:#1D2B36;
+    --rule:#2A3B48;
+    --fg:#E8F0F5;
+    --dim:#7B909F;
+    --chart:#54A6DC;
+    --amber:#E9A33C;
+    --red:#D6483C;
+    --green:#4FB477;
+    --amber-bg:#241A0B;
+    --amber-line:#3D2C10;
+    --shadow:none;
+  }
+}
+
+[data-theme="dark"]{
+  --ink:#0A1116;
+  --panel:#151F27;
+  --panel-hi:#1D2B36;
+  --rule:#2A3B48;
+  --fg:#E8F0F5;
+  --dim:#7B909F;
+  --chart:#54A6DC;
+  --amber:#E9A33C;
+  --red:#D6483C;
+  --green:#4FB477;
+  --amber-bg:#241A0B;
+  --amber-line:#3D2C10;
+  --shadow:none;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+html,body{
+  margin:0;
+  color:var(--fg);
+  font:400 calc(14px * var(--scale))/1.35 var(--sans);
+}
+
+a{color:var(--chart)}
+
+/* status dot, used by both pages */
+.led{
+  display:inline-block;width:.5em;height:.5em;border-radius:50%;
+  background:var(--dim);margin-right:.45em;vertical-align:middle;flex:none;
+}
+.led.ok{background:var(--green)}
+.led.wait{background:var(--amber)}
+.led.err{background:var(--red)}
+
+/* small monospace label */
+.tag{
+  padding:2px 5px;border:1px solid var(--rule);border-radius:2px;
+  font-family:var(--mono);font-size:.72em;color:var(--dim);white-space:nowrap;
+}
+.tag.fresh{color:var(--green);border-color:currentColor}
+.tag.due{color:var(--amber);border-color:currentColor}
+.tag.unver{color:var(--red);border-color:currentColor}
+
+:focus-visible{outline:2px solid var(--chart);outline-offset:2px}
