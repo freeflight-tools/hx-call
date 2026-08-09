@@ -45,7 +45,7 @@ window.HX_ZONES = [
  {id:"bsl", n:"Basel TMA Tango T1-T3", sn:"BASEL T1-3",
   w:"Jura, Weissenstein, Delémont",
   p:"+41613253467", s:"061 325 34 67", lat:47.350, lon:7.480, r:34,
-  rc:30, v:false, src:"SHV Luftraumbroschüre 2026",
+  rc:30, v:true, src:"SHV Luftraumbroschüre 2026 · called 09.08.2026",
   note:"Active during Basel south approaches, but can be activated at any time of day at 30 minutes' notice."},
 
  {id:"zrh", n:"Zürich TMA Sierra S1-S3", sn:"ZÜRICH S1-3",

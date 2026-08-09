@@ -45,7 +45,7 @@ they were noise.
 
 ## Provenance of each number
 
-One of the five is confirmed; the other four are **unverified**. Confirm a
+Two of the eight are confirmed; the other six are **unverified**. Confirm a
 number either against the aerodrome's AD INFO page in the current eVFR Manual,
 or by calling it and reaching the right recorded status line — the call is the
 weaker evidence of which number is official, and the stronger evidence that it
@@ -56,7 +56,7 @@ still works. Record which was done, and when.
 | Meiringen CTR + TMA 1–6 | 0800 496 347 | SHV Sonderregelung Meiringen (valid from 21.03.2024). Mnemonic 0800-HX-MEIR. Fallbacks 058 461 67 06 (Flugdienstleiter), 058 461 64 64 (Zentrale). Radio 130.150. |
 | Emmen CTR 1/2 + TMA, Buochs CTR, Alpnach CTR | 041 620 91 06 | LSZC AD INFO §10.5.1. INFO transmission H24, radio 134.130. One call covers all four. |
 | Bern CTR + TMA sectors | 022 417 40 76 | SHV, procedure valid from 19.03.2026. ATIS, radio 125.130. |
-| Basel TMA Tango T1–T3 | 061 325 34 67 | Luftraumbroschüre 2026. Tape also on 134.680. |
+| Basel TMA Tango T1–T3 | 061 325 34 67 | Luftraumbroschüre 2026. **Confirmed by call, 09.08.2026** — reached the recorded status line. Independently quoted by the Delta Club Weissenstein airspace page, which gives the tape frequency as 134.675 rather than 134.680. |
 | Zürich TMA Sierra S1–S3 | 043 816 22 95 | Luftraumbroschüre 2026. **Confirmed by call, 09.08.2026** — reached the recorded status line. First verified entry. |
 | Locarno CTR + TMA | 091 816 17 44 | SHV *TMA Locarno Statusinfo*, 14.07.2016 upd. 22.07.2019. Named there as the **only legally binding** source together with ATIS 133.450. Six years old — recheck. |
 | Sion CTR | 022 417 40 80 | Sion Airport pilot info page, 09.08.2026, listed as the ATIS phone beside ATIS 130.630. CTR only; the Sion TMAs are TEMPO. |

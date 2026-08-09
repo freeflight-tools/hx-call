@@ -123,9 +123,10 @@ to them.
 1. **Eight numbers are missing** — Payerne, Dübendorf, Sion, Locarno, Lugano,
    St. Gallen, Grenchen, Les Eplatures. They live in the AD INFO pages of the
    eVFR Manual (skybriefing, ~CHF 49/yr). Not on the open web.
-2. **Four of the five numbers are unverified.** Zürich S1–S3 was confirmed by
-   call on 09.08.2026; Meiringen, Emmen/Buochs/Alpnach, Bern and Basel still
-   need confirming. The owner checks numbers personally — the long-term aim is
+2. **Six of the eight numbers are unverified.** Zürich S1–S3 and Basel T1–T3
+   were confirmed by call on 09.08.2026; Meiringen, Emmen/Buochs/Alpnach, Bern,
+   and the newly sourced Locarno, Sion and Grenchen still need confirming.
+   The owner checks numbers personally — the long-term aim is
    that the rest of the data is community maintained, with contributed numbers
    arriving `v:false` and only being marked verified after that check.
 3. **`tel:` does not work in XCTrack — measured, and worked around.** With
