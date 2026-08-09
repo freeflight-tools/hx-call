@@ -65,8 +65,9 @@ window.HX_ZONES = [
   lat:47.398, lon:8.648, r:18, note:"See LSMD AD INFO."},
 
  {id:"sio", n:"Sion CTR", sn:"SION", w:"Rhonetal, Rawil, Sanetsch",
-  lat:46.219, lon:7.327, r:16,
-  note:"CTR only - the Sion TMAs are TEMPO and come with your airspace update."},
+  p:"+41224174080", s:"022 417 40 80", lat:46.219, lon:7.327, r:16,
+  rc:30, v:false, src:"Sion Airport pilot info, 09.08.2026",
+  note:"ATIS tape on the same Skyguide bank as Bern. CTR only - the Sion TMAs are TEMPO and come with your airspace update."},
 
  {id:"loc", n:"Locarno CTR + TMA", sn:"LOCARNO", w:"Maggiatal, Centovalli",
   p:"+41918161744", s:"091 816 17 44", lat:46.161, lon:8.879, r:16,
