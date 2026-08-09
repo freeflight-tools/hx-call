@@ -128,14 +128,17 @@ to them.
    need confirming. The owner checks numbers personally — the long-term aim is
    that the rest of the data is community maintained, with contributed numbers
    arriving `v:false` and only being marked verified after that check.
-3. **`tel:` does not work in XCTrack — answered, and worked around.** Measured
-   on device with `tools/tel-probe.html`: a `tel:` link, `tel:` by assignment,
-   `intent://…ACTION_DIAL` and `window.open` all fail, and the tap strands the
-   widget on the WebView's error page until it reloads. The clipboard was the
-   only thing that worked. So `HX.NO_TEL` detects the WebView and the widget
-   copies the number instead of linking to it. An issue asking XCTrack to
-   forward the intent is drafted; if they ship it, drop `NO_TEL` and the chips
-   go back to dialling directly.
+3. **`tel:` is unreliable in XCTrack — measured, and worked around.** With
+   `tools/tel-probe.html` on Android 17 / WebView 150: an anchor `tel:` link
+   opened the dialler **once**, then hit the "Web page not available" page on
+   every later attempt. `tel:` by assignment, `intent://…ACTION_DIAL` and
+   `window.open` all failed outright. `navigator.clipboard` worked.
+   Why the first tap succeeded is not understood — worth re-testing before
+   anyone concludes it is fixed. A tap that dials sometimes and otherwise
+   strands the widget on an error page is worse than one that reliably copies,
+   so `HX.NO_TEL` detects the WebView and the widget copies instead. An issue
+   asking XCTrack to forward the intent is drafted; if they ship it, drop
+   `NO_TEL` and the chips go back to dialling directly.
 4. **Live status.** See `docs/next-session.md`. Ask the friend who built
    pgairspace.ch before reverse-engineering anything.
 5. **Upstream the data** to the SHV airspace DB (dominik@airriders.ch) rather
