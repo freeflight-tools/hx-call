@@ -89,33 +89,190 @@ larger payload, which is why it wasn't used.
 
 ## Prior art — live status tools
 
-Two projects already show live status for some zones by reading the ATIS. This
-reframes what HX Call is for: not competing with them, but covering the eleven
-zones they don't, and working with no connectivity. See `docs/next-session.md`
-for the open investigation.
-
-**bern.pdcs.ch** — Lukas Buchs, Para-Deltaclub Stockhorn, published 13 April
-2026. Loads the latest Bern ATIS automatically and colours the airspaces.
-`/xct.html` is the XCTrack widget: two small badges, `W` and `E`, for the west
-approach (TMA 4) and east approach (TMA 6), overlaid on the map top-right. It
-polls Skyguide once per minute, turns red after 4 minutes without a connection,
-and auto-hides when you aren't near Bern. Same author wrote the widely used
-windspion XCTrack widget, whose URL conventions (`?size=0`, `&mode=dark`,
-refresh rate 0) this project copied.
-
-**pgairspace.ch "HX Monitor"** — built by a friend of this repo's owner. Covers
-Bern and Meiringen. `?area=<area>`, `&sub=ctr,t1,t2` to filter sub-areas, and
-`&transcript=[hide|only]`. It displays a **transcript** of the broadcast and
-recommends keeping it visible so the pilot can verify. That word implies
-speech-to-text over audio rather than a data feed — the `lszb-atc` GitHub org
-publishes ATC audio streams from Bern-Belp including an ATIS channel, which is
-a plausible input. The guide suggests running two widgets, one `hide` and one
-`only`, to give the transcript a horizontal panel.
+Two projects already show live status for some zones. This reframes what HX
+Call is for: not competing with them, but covering the eleven zones they don't,
+and working with no connectivity.
 
 Both require a data connection, and Lukas states plainly that his data is
 informational only and must not be used to decide entry or to monitor status in
 flight — the radio or the phone remains the sanctioned channel. That is exactly
 the gap HX Call fills.
+
+### How they actually work
+
+Investigated 9 August 2026 by fetching the pages, their JS and their endpoints
+directly. Both frontends are readable — no browser automation was needed. A
+dozen requests total, no polling.
+
+**bern.pdcs.ch** — Lukas Buchs, Para-Deltaclub Stockhorn, published 13 April
+2026. Hand-written vanilla JS, no framework, unminified. `/` is a Leaflet map
+(swisstopo grey tiles, airspace polygons from a local `resources/airspace.kml`,
+plus live OGN traffic via `js/ogn.js`). `/xct.html` is the XCTrack widget: two
+divs, `W` and `E`, and `js/xct.js`.
+
+Single data call, **same-origin**: `fetch('php/Atis.php')`, and `?r=0` in the
+widget to suppress the `raw` field. Response:
+
+```json
+{"success":true,
+ "atis":{"letter":"PAPA","runway_number":32,"transition_level":70,
+         "clearance_delivery_active":false,"temperature":34,"dewpoint":7,"qnh":1017,
+         "airspace":{"ctr":{"isActive":true,"lower_ft":"GND","upper_ft":5500,
+                            "lower_mt":"GND","upper_mt":1700},
+                     "tma1":…,"tma2":…,"tma3":…,"tma4":…,"tma5":…,"tma6":…,
+                     "lsr82":…},
+         "time_of_generation":"2026-08-09T11:50:05+00:00"},
+ "raw":"…","lastModified":"2026-08-09T11:51:18+00:00"}
+```
+
+The `raw` field is the full ATIS text, and it is **clean prose** — correct
+capitalisation and punctuation, with its own generation timestamp and a
+separate `lastModified`. That is an official text/digital ATIS document, not
+speech-to-text. All parsing happens server-side in the PHP, so the upstream
+host is not visible from outside; only Lukas can say what it is.
+
+Its fail-safe logic is worth copying verbatim, because it fails **active**, not
+just red:
+
+```js
+atisIsCurrent    = age(time_of_generation) < 35 min
+loadTimeIsCurrent = age(last successful fetch) < 4 min
+isActive = !atisIsCurrent || !loadTimeIsCurrent || (zone.isActive ?? null) !== false
+```
+
+Anything other than an explicit fresh `false` renders as active. The 4-minute
+rule is not cosmetic — after 4 minutes offline every zone goes back to active.
+
+The widget's auto-hide is a 9-point polygon around Bern with a ray-cast test
+against `XCTrack.getLocation()`. Outside it, `body` gets `.not-near` and the
+fetch is skipped — but only after it has data once; until then it retries every
+5 s. Same author wrote the widely used windspion XCTrack widget, whose URL
+conventions (`?size=0`, `&mode=dark`, refresh rate 0) this project copied.
+
+**pgairspace.ch "HX Monitor"** — built by a friend of this repo's owner. A
+Vite/React SPA with runtime config in `/config.js`:
+
+```js
+window.RUNTIME_CONFIG = {
+  API_BASE_URL: 'https://api.pgairspace.ch',
+  AIRPSACES_JSON_URL: 'https://airspace.shv-fsvl.ch/api/v1/geojson/airspaces',
+  PRE_FILTER_GEO_JSON: true }
+```
+
+so it draws SHV's own polygons (v1 of the same API noted under *Circle
+geometry*), filtered client-side to `["Meiringen","Bern"]`. Three REST
+endpoints on a **separate public API host**:
+
+| Endpoint | Returns |
+|---|---|
+| `GET /api/v1/areas` | all areas with per-sub-area `active` |
+| `GET /api/v1/areas/{name}` | one area, same shape |
+| `GET /api/v1/transcripts/{name}/latest` | `{date, transcript}` |
+
+plus `wss://api.pgairspace.ch/ws`, which pushes `{"update":"<area>"}` and makes
+the client refetch (reconnect after 5 s). There is also a 30 s poll, but only
+while some area is past its `next_action`.
+
+An area looks like this:
+
+```json
+{"name":"bern","retrieval_type":"radio","radio_frequency":"125.125 MHz",
+ "is_stale":false,"last_action":"2026-08-09T12:12:00.953Z",
+ "next_action":"2026-08-09T12:17:00.947Z","last_action_success":true,
+ "last_error":"","num_errors":0,"flight_operating_hours":null,
+ "sub_areas":[{"name":"bern-tma-4","full_name":"TMA Bern 4 HX",
+               "active":false,"pending_activation":false}, …]}
+```
+
+**`retrieval_type` is the finding of this whole investigation.** Bern is
+`"radio"` — an SDR listening on the ATIS frequency. Meiringen is `"call"`: the
+backend **dials the phone tape** and transcribes it. The transcripts confirm
+it, errors and all:
+
+> *Bern:* "This is burn information papa at 1150. RNT approach Zulu tree two
+> one way in use tree two transition level seven zero CPR is active TMA1 235
+> and 6 R active TMA4 is not active…"
+
+> *Meiringen:* "Admiring and CTR and PMA are not active. Expect CTR and TMA my
+> ring and to be active again on the 18th of August 2026 from 7:30 local time.
+> If you hear this message on the 18th of August 2026 after 7:30, local time
+> contact, the Chiefs flight operations, my ringham from 058461 67, 06…"
+
+"Meiringen" comes out as *Admiring*, *my ring and*, *my ringham*; "CTR" as
+*CPR*. The interpreter still got the activation states right, but this is
+exactly why the guide insists the pilot keeps the transcript visible.
+
+Note the polling cadences differ by cost: Bern (radio, free) every **5
+minutes**; Meiringen (a real phone call) is scheduled from what the tape itself
+said — read 22 July, next call queued for **17 August 05:45Z**, the morning
+before the announced reactivation.
+
+Its widget takes `?area=bern`, `&sub=ctr,t1,t2`, `&transcript=[hide|only]`; the
+guide suggests two widgets, one `hide` and one `only`, to give the transcript a
+horizontal panel.
+
+Every response carries `"disclaimer": "Use of this data subject to agreement;
+https://pgairspace.ch/disclaimer.html"`. That page: experimental service, fully
+automated transcription and interpretation, no guarantee of accuracy, users
+waive claims, verify via official sources. Consuming the API means accepting
+that **and passing it on to pilots**.
+
+### The four questions, answered
+
+**Same-origin or proxied?** Different answers. `bern.pdcs.ch` proxies
+server-side through its own PHP — consistent with the guess that the subdomain
+exists to host that proxy. `pgairspace.ch` does not: `api.pgairspace.ch` is a
+deliberate public API, separate host, documented-looking paths.
+
+**CORS?** A request to `bern.pdcs.ch/php/Atis.php` with
+`Origin: https://elgandoz.github.io` came back with **no**
+`access-control-allow-origin` header — a browser on GitHub Pages cannot read
+it. Every `api.pgairspace.ch` endpoint returns **`access-control-allow-origin:
+*`**, so a static page can call it directly with no server of our own.
+
+**Token?** Neither. Both served full data to an unauthenticated `curl` with no
+cookie, no key, no `Referer`. Nothing to reuse, nothing to leak — but also
+nothing stopping either author from adding one.
+
+**What does the ATIS actually say?** Bern, 9 August 2026 11:50Z, verbatim from
+`raw`:
+
+```
+THIS IS BERN INFORMATION PAPA, AT 1150.
+RNP APPROACH ZULU 32, RUNWAY IN USE 32.
+TRANSITION LEVEL: 70.
+CTR IS ACTIVE. TMA 1, 2, 3, 5 AND 6 ARE ACTIVE. TMA 4 IS NOT ACTIVE.
+BERN CLEARANCE DELIVERY: NOT ACTIVE.
+WIND: 310 DEGREES, 10 KNOTS. CAVOK.
+TEMPERATURE 34. DEWPOINT 7. QNH 1017.
+BERN INFORMATION PAPA.
+```
+
+One line out of eleven carries the airspace status, and it collapses a list of
+sectors into one sentence. Both projects reduce it to a per-sector boolean; the
+fragile part is exactly that sentence, and it is markedly more fragile when it
+arrives via speech-to-text.
+
+**Does anything equivalent exist for the other zones?** Not yet — but
+`retrieval_type: "call"` proves the pipeline does not need a radio receiver.
+Anything with a tape and a number is a candidate, which is the entire HX Call
+dataset. **Emmen/Buochs/Alpnach is the strongest one**: 041 620 91 06 covers
+four airspaces in one call and transmits H24. The blockers are not technical —
+whether the backend accepts new areas, who pays for and is comfortable with an
+automated system dialling an operational (and in Meiringen's and Emmen's case,
+military) line on a schedule, and how often you may call before it's rude. Ask
+before assuming.
+
+### Loose ends noticed on the way
+
+- pgairspace listens to Bern on **125.125 MHz**; SHV and `hx/data.js` say the
+  ATIS is on **125.130**. One of them is stale. It doesn't affect the phone
+  number, but check which is current when verifying Bern against AD INFO.
+- `bern.pdcs.ch` also tracks **LSR 82**, a temporary restricted area not in our
+  dataset — it shows and hides the polygon by ATIS state.
+- The `lszb-atc` GitHub org (ATC audio from Bern-Belp) was the guessed input
+  for pdcs. It isn't: pdcs consumes clean text. It may still be relevant to
+  anyone building a receiver.
 
 ## Other leads
 
