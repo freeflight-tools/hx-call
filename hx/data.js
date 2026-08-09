@@ -49,7 +49,7 @@ window.HX_ZONES = [
  {id:"zrh", n:"Zürich TMA Sierra S1-S3", sn:"ZÜRICH S1-3",
   w:"Albis, Zugerberg, Einsiedeln",
   p:"+41438162295", s:"043 816 22 95", lat:47.200, lon:8.550, r:30,
-  rc:30, v:false, src:"SHV Luftraumbroschüre 2026",
+  rc:30, v:true, src:"SHV Luftraumbroschüre 2026 · called 09.08.2026",
   note:"Mostly mornings and evenings for Zürich south approaches, but can be activated outside those hours."},
 
  /* ── HX with no number sourced yet ──────────────────────────────────

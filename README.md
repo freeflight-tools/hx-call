@@ -89,7 +89,7 @@ Colour on the left edge: blue = not checked, green = checked and still valid, am
 
 Tapping a number starts the re-check clock. Meiringen follows its tape schedule (07:30 / 13:15 / 17:05), Bern is 15 minutes, the rest default to 30. This matters — VFR RAC 4-0-0-1 §0.2.3 expects you to stay informed of status changes, not just check once.
 
-**unverified** means the number hasn't been confirmed against the current eVFR Manual. Do that before relying on it.
+**unverified** means nobody has confirmed the number yet — neither against the current eVFR Manual nor by ringing it. Do one of those before relying on it.
 
 Zones with **no number on file** are hidden by default: this is a speed-dial, and a zone you can't ring is a button that does nothing. They are still in the data, and `nonum=1` shows them.
 
@@ -117,7 +117,7 @@ Everything is in `hx/data.js`, one object per entry, documented at the top of th
 
 The circles are **deliberately generous**. An extra entry on screen costs nothing; a missing one costs a violation. They are not airspace boundaries and must never be used as such.
 
-Set `v:true` once you've confirmed a number against the aerodrome's AD INFO page in the eVFR Manual.
+Leave `v:false` on anything you add. It is set only after the number has been confirmed — against the aerodrome's AD INFO page in the eVFR Manual, or by ringing it and reaching the right recorded status line. Note which, and the date, in `src`.
 
 ## Missing numbers
 
@@ -127,9 +127,11 @@ Payerne, Dübendorf, Sion, Locarno, Lugano, St. Gallen, Grenchen and Les Eplatur
 
 Found a wrong number, a missing zone, or a bug? [Open an issue](https://github.com/elgandoz/hx-call/issues), or send a pull request directly. Corrections to `hx/data.js` are the most useful kind — one entry per commit, with the source and the date you checked it.
 
+The aim is for the data to be community maintained. Numbers are the exception: send them in with `v:false` and a source, and the maintainer confirms each one before it ships as verified. Nobody has to take an unchecked number on trust.
+
 ## Built with AI
 
-Most of the code here was written by an AI assistant, under human direction and review. The phone numbers are a separate matter: each one lists the source it came from, and any number not yet confirmed against the eVFR Manual is tagged **unverified** in the app. Judge the data on its sources, not on how the code was written.
+Most of the code here was written by an AI assistant, under human direction and review. The phone numbers are a separate matter: each one lists the source it came from, and any number nobody has confirmed yet is tagged **unverified** in the app. Judge the data on its sources, not on how the code was written.
 
 ## Disclaimer
 

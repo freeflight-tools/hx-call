@@ -45,8 +45,11 @@ they were noise.
 
 ## Provenance of each number
 
-All five are **unverified**. Verify against the aerodrome's AD INFO page in the
-current eVFR Manual before relying on any of them.
+One of the five is confirmed; the other four are **unverified**. Confirm a
+number either against the aerodrome's AD INFO page in the current eVFR Manual,
+or by calling it and reaching the right recorded status line — the call is the
+weaker evidence of which number is official, and the stronger evidence that it
+still works. Record which was done, and when.
 
 | Zone | Number | Source |
 |---|---|---|
@@ -54,7 +57,7 @@ current eVFR Manual before relying on any of them.
 | Emmen CTR 1/2 + TMA, Buochs CTR, Alpnach CTR | 041 620 91 06 | LSZC AD INFO §10.5.1. INFO transmission H24, radio 134.130. One call covers all four. |
 | Bern CTR + TMA sectors | 022 417 40 76 | SHV, procedure valid from 19.03.2026. ATIS, radio 125.130. |
 | Basel TMA Tango T1–T3 | 061 325 34 67 | Luftraumbroschüre 2026. Tape also on 134.680. |
-| Zürich TMA Sierra S1–S3 | 043 816 22 95 | Luftraumbroschüre 2026. |
+| Zürich TMA Sierra S1–S3 | 043 816 22 95 | Luftraumbroschüre 2026. **Confirmed by call, 09.08.2026** — reached the recorded status line. First verified entry. |
 
 Note the Basel info frequency moved from 134.675 to 134.680 at some point, and
 Emmen TWR from 120.425 to 118.000 in March 2023 — figures in older PDFs are

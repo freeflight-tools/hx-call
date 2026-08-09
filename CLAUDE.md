@@ -44,9 +44,13 @@ to them.
   That default is a deliberate trade: it means the list is silent about eight
   of thirteen zones, so the pages must never imply the list is a survey of
   what is nearby. Deleting the entries would foreclose the choice entirely.
-- **Never set `v:true`** on a zone unless the number was actually checked
-  against that aerodrome's AD INFO page in the current eVFR Manual. `v:false`
-  renders a red "unverified" tag. That tag is the point.
+- **Never set `v:true`** on a zone unless the number has actually been
+  confirmed — either against that aerodrome's AD INFO page in the current eVFR
+  Manual, or by calling it and reaching the right recorded status line. A call
+  is the weaker source for *which* number is official and the stronger one for
+  whether it works today. Record which was done, and the date, in `src`.
+  `v:false` renders a red "unverified" tag. That tag is the point: a number
+  copied from a secondary source is not verified, however plausible it looks.
 - **Keep the "if you can't confirm the status, the airspace is active" line**
   visible in `app.html`. It is the legal default under VFR RAC 4-0-0-1 §0.2.2.
 - The re-check clock is not a nicety. §0.2.3 expects continuous awareness of
@@ -90,8 +94,11 @@ to them.
 1. **Eight numbers are missing** — Payerne, Dübendorf, Sion, Locarno, Lugano,
    St. Gallen, Grenchen, Les Eplatures. They live in the AD INFO pages of the
    eVFR Manual (skybriefing, ~CHF 49/yr). Not on the open web.
-2. **Every number is unverified.** All five need checking against current
-   AD INFO before this is shared with anyone.
+2. **Four of the five numbers are unverified.** Zürich S1–S3 was confirmed by
+   call on 09.08.2026; Meiringen, Emmen/Buochs/Alpnach, Bern and Basel still
+   need confirming. The owner checks numbers personally — the long-term aim is
+   that the rest of the data is community maintained, with contributed numbers
+   arriving `v:false` and only being marked verified after that check.
 3. **Untested on device: does XCTrack's WebView honour `tel:` links?** Some
    Android WebViews swallow non-http schemes. If it fails, the standalone page
    becomes the workaround and it's worth reporting to the XCTrack devs.
