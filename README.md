@@ -45,6 +45,8 @@ with, which saves typing a long URL on a small screen. Then:
 | Disable unlocking | ON | Stops a stray swipe rearranging it |
 | Refresh rate | **0** | The page updates itself |
 
+If you size the widget for four results but usually see one, `valign=bottom` (or `center`) stops that single chip floating at the top of the reserved space. The order never changes — nearest is always the first chip.
+
 If you leave *Allow web page to access XCTrack data* off, use placeholders instead and set the refresh rate to 60–120 s:
 
 ```
@@ -75,6 +77,7 @@ Identical for both pages, and identical to the settings UI — the fields are ge
 | `size=N` | `0` | Text scale, 0–100 (%) |
 | `theme=` | `auto` | `auto` follows the phone, or `dark` / `light` |
 | `nonum=` | `0` | `1` also shows zones whose number isn't known yet |
+| `valign=` | `top` | Widget only. `center` or `bottom` when you've reserved height for more results than are showing |
 
 Position, if you want to supply it yourself:
 

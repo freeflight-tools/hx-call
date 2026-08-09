@@ -81,6 +81,10 @@ to them.
 - **`HX.SPEC` is the single source of truth** for URL parameters *and* the
   settings UI in both `app.html` and `index.html`. Add a parameter there and it
   appears everywhere, already clamped. Never hand-write a settings field.
+  `only:"widget"` marks one that applies to a single view: `app.html` skips it
+  rather than showing a dead control, while the launcher keeps showing it
+  because that is where widget URLs are built. Anything reading `HX.SPEC` to
+  populate fields must tolerate a missing element.
 - **The widget's `<body>` must stay unpainted.** XCTrack renders a white or
   absent background as transparent so the widget floats over the map. Every
   chip carries its own background. Don't add a body background.

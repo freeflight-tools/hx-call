@@ -14,12 +14,19 @@
 html,body{background:transparent}
 body{padding:2px}
 
+/* The grid fills the widget's height so ?valign= has something to align
+   within. When the results are shorter than the space XCTrack gives us,
+   this decides whether they sit against the top, the middle or the
+   bottom edge. Ordering is untouched — nearest is always the first chip. */
 #grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(calc(112px * var(--scale)),1fr));
   gap:calc(3px * var(--scale));
   align-content:start;
+  min-height:calc(100vh - 4px);          /* body padding, 2px top and bottom */
 }
+[data-valign="center"] #grid{align-content:center}
+[data-valign="bottom"] #grid{align-content:end}
 
 .chip{
   display:block;text-decoration:none;color:var(--fg);

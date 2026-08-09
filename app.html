@@ -155,6 +155,7 @@ const made   = {};
 (function settings(){
   const wrap = document.getElementById("fields");
   for (const sp of HX.SPEC){
+    if (sp.only === "widget") continue;      // nothing it could do on this page
     const row = document.createElement("div");
     row.className = "field";
 
@@ -206,6 +207,7 @@ const made   = {};
     HX.resetConfig();
     for (const sp of HX.SPEC){
       const el = document.getElementById("f_" + sp.key);
+      if (!el) continue;                     // widget-only, not on this page
       if (sp.type === "bool") el.checked = !!HX.config[sp.key];
       else el.value = HX.config[sp.key];
     }

@@ -32,8 +32,14 @@ const SPEC = [
   {key:"refresh", type:"int",  min:5, max:900, def:60,     label:"Position refresh", unit:"s", hint:"Seconds between position updates"},
   {key:"size",    type:"int",  min:0, max:100, def:0,      label:"Text size", unit:"%", hint:"Scale everything up"},
   {key:"theme",   type:"enum", options:["auto","dark","light"], def:"auto", label:"Theme", hint:"Auto follows your phone"},
-  {key:"nonum",   type:"bool", def:0,          label:"Also show zones without a number", hint:"HX zones whose number isn't known yet — nothing to dial"}
+  {key:"nonum",   type:"bool", def:0,          label:"Also show zones without a number", hint:"HX zones whose number isn't known yet — nothing to dial"},
+  {key:"valign",  type:"enum", options:["top","center","bottom"], def:"top", only:"widget",
+   label:"Vertical position", hint:"Where the chips sit when the widget is taller than the results"}
 ];
+
+/* `only` marks a parameter that belongs to one view. app.html skips the
+   widget-only ones rather than showing a control that does nothing; the
+   launcher shows everything, because that is where widget URLs are built. */
 
 const COARSE_M = 2000;      // above this the fix can't be trusted to rank
 const DEG_KM   = 111.195;
@@ -297,6 +303,7 @@ const HX = {
     const el = document.documentElement;
     if (cfg.theme === "auto") el.removeAttribute("data-theme");
     else el.setAttribute("data-theme", cfg.theme);
+    el.setAttribute("data-valign", cfg.valign);
     el.style.setProperty("--scale", (1 + cfg.size / 100).toFixed(3));
   },
 
