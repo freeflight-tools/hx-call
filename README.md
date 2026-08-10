@@ -48,7 +48,7 @@ with, which saves typing a long URL on a small screen. Then:
 
 If you size the widget for four results but usually see one, `valign=bottom` (or `center`) stops that single chip floating at the top of the reserved space. The order never changes — nearest is always the first chip.
 
-**Inside XCTrack a tap copies the number instead of dialling it.** XCTrack's WebView can't open `tel:` links: the tap lands on an Android error page and leaves the widget stuck there until it reloads. Tested on device — `tel:`, `intent://` and `window.open` all fail, and the clipboard is the only thing that works. So the chip copies the number and flashes **COPIED**; paste it into your dialler. In an ordinary phone browser the same chip dials directly, and it will again inside XCTrack if they add support.
+**Inside XCTrack a tap copies the number instead of dialling it.** XCTrack's WebView can't open `tel:` links: the tap lands on an Android error page and leaves the widget stuck there until it reloads. Tested on device — `tel:`, `intent://` and `window.open` all fail, and the clipboard is the only thing that works. So the chip copies the number and flashes **COPIED**; paste it into your dialler. In an ordinary phone browser the same chip dials directly, and it will again inside XCTrack if they add support — tracked as [xctrack-public work item 1299](https://gitlab.com/xcontest-public/xctrack-public/-/work_items/1299).
 
 If you leave *Allow web page to access XCTrack data* off, use placeholders instead and set the refresh rate to 60–120 s:
 
