@@ -120,9 +120,12 @@ to them.
 
 ## Open threads
 
-1. **Eight numbers are missing** — Payerne, Dübendorf, Sion, Locarno, Lugano,
-   St. Gallen, Grenchen, Les Eplatures. They live in the AD INFO pages of the
-   eVFR Manual (skybriefing, ~CHF 49/yr). Not on the open web.
+1. **Five numbers are missing** — Payerne, Dübendorf, Lugano, St. Gallen, Les
+   Eplatures. They live in the AD INFO pages of the eVFR Manual (skybriefing,
+   ~CHF 49/yr). Not on the open web, and some may never be. Sion, Locarno and
+   Grenchen have since been sourced and are in `data.js` as `v:false`; the
+   README said "eight missing" until 2026-08-13, which was three numbers out
+   of date. Count from `data.js`, not from prose.
 2. **Six of the eight numbers are unverified.** Zürich S1–S3 and Basel T1–T3
    were confirmed by call on 09.08.2026; Meiringen, Emmen/Buochs/Alpnach, Bern,
    and the newly sourced Locarno, Sion and Grenchen still need confirming.

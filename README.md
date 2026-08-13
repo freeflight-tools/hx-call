@@ -110,7 +110,7 @@ Tapping a number starts the re-check clock. Meiringen follows its tape schedule 
 
 Zones with **no number on file** are hidden by default: this is a speed-dial, and a zone you can't ring is a button that does nothing. They are still in the data, and `nonum=1` shows them.
 
-Turn it on if you want them, but either way **read the airspace off your flight computer, not off this list**. Eight of the thirteen entries have no number yet, so by default the list is silent about most Swiss HX airspace. An empty screen here means "nothing to dial", never "no HX here".
+Turn it on if you want them, but either way **read the airspace off your flight computer, not off this list**. Five of the thirteen entries have no number yet, so by default the list is silent about those. An empty screen here means "nothing to dial", never "no HX here".
 
 Two behaviours worth knowing:
 
@@ -153,9 +153,11 @@ The circles are **deliberately generous**. An extra entry on screen costs nothin
 
 Leave `v:false` on anything you add. It is set only after the number has been confirmed — against the aerodrome's AD INFO page in the eVFR Manual, or by ringing it and reaching the right recorded status line. Note which, and the date, in `src`.
 
-## Missing numbers
+## What's on file
 
-Payerne, Dübendorf, Sion, Locarno, Lugano, St. Gallen, Grenchen and Les Eplatures are HX but their numbers aren't published openly — they're in the AD INFO pages of the eVFR Manual.
+Thirteen zones. **Eight have a number**, of which **two are confirmed by call** (Zürich S1–S3 and Basel T1–T3, 09.08.2026); the other six are tagged **unverified** until someone rings them or checks them against the current eVFR Manual.
+
+**Five have no number yet** — Payerne, Dübendorf, Lugano, St. Gallen and Les Eplatures. Theirs aren't published openly; they're in the AD INFO pages of the eVFR Manual. Some may never be published, so those entries stay in the data and `nonum=1` decides whether you see them.
 
 ## Contributing
 
