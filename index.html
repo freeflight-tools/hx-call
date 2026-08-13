@@ -8,6 +8,20 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-180.png">
+
+<!-- Social preview — see the note in app.html. Regenerate with tools/og-card.html. -->
+<meta name="description" content="Phone numbers for Swiss HX airspaces, sorted by how close you are. Works with no signal.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Free Flight Tools">
+<meta property="og:title" content="HX Call — is that airspace on?">
+<meta property="og:description" content="Swiss HX zones activate at 30 minutes' notice. This finds the recorded line that says whether one is active.">
+<meta property="og:url" content="https://freeflight-tools.github.io/hx-call/">
+<meta property="og:image" content="https://freeflight-tools.github.io/hx-call/og-hxcall.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="HX Call showing the nearest Swiss HX airspaces and their phone numbers.">
+<meta name="twitter:card" content="summary_large_image">
+
 <link rel="stylesheet" href="hx/base.css">
 <style>
 body{background:var(--ink);padding:0 0 40px}
@@ -83,6 +97,12 @@ ol b{color:var(--fg)}
   border:1px solid var(--amber-line);border-radius:3px;
   color:var(--amber);font-size:.82em;line-height:1.45;
 }
+.priv{
+  margin:22px 0 0;padding:10px 12px;background:var(--panel);
+  border:1px solid var(--rule);border-radius:3px;
+  color:var(--dim);font-size:.84em;line-height:1.5;
+}
+.priv b{color:var(--fg)}
 footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
 
 /* ── pointer feedback (see hx/base.css) ─────────────────────────── */
@@ -154,6 +174,12 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
     <b>unverified</b> still need checking against the current eVFR Manual.
     If you can't confirm a status, the airspace is active.
   </p>
+
+  <!-- One sentence, above the legal line rather than inside it: a pilot asked
+       for GPS on first launch wants this answered, and burying it in the
+       disclaimer reads as though it were also a liability caveat. -->
+  <p class="priv"><b>Your position never leaves your phone.</b> No accounts, no
+    analytics, nothing sent anywhere.</p>
 
   <footer>
     Unofficial, no warranty. Only the official publications (eVFR Manual, glider

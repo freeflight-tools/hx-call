@@ -27,16 +27,27 @@
       parameters and the settings UI ─────────────────────────────── */
 
 const SPEC = [
-  {key:"max",     type:"int",  min:1, max:99,  def:4,      label:"Max results",    hint:"At most this many of the matching zones are listed"},
-  {key:"range",   type:"int",  min:1, max:999, def:10,     label:"Range",  unit:"km", hint:"Hide zones further than this"},
-  {key:"refresh", type:"int",  min:5, max:900, def:60,     label:"Position refresh", unit:"s", hint:"Seconds between position updates"},
-  {key:"size",    type:"int",  min:0, max:100, def:0,      label:"Text size", unit:"%", hint:"Scale everything up"},
+  /* `hint` IS THE PILOT'S TEXT. One short line, read one-handed on a phone in
+     gloves — never a description of the mechanism. Anything explaining *why* a
+     default is what it is belongs in a comment here, where the next developer
+     looks and the pilot does not. Rewritten 2026-08-13; do not let
+     "At most this many of the matching zones are listed" creep back. */
+  {key:"max",     type:"int",  min:1, max:99,  def:4,      label:"How many zones to show", hint:"The nearest ones first"},
+  /* Distance is to the zone EDGE, not its centre — and the circles in data.js
+     are deliberately oversized triage radii, so this is generous by design. */
+  {key:"range",   type:"int",  min:1, max:999, def:10,     label:"Hide zones further than",  unit:"km", hint:"Measured to the edge of the zone, not its centre"},
+  /* 60 s is deliberate: status changes on a 15–30 min cycle, so a faster poll
+     spends battery to learn nothing. Don't lower the default. */
+  {key:"refresh", type:"int",  min:5, max:900, def:60,     label:"Check your position every", unit:"s", hint:"Faster costs battery and changes nothing"},
+  {key:"size",    type:"int",  min:0, max:100, def:0,      label:"Text size", unit:"%", hint:"Bigger text and bigger buttons"},
   {key:"theme",   type:"enum", options:["auto","dark","light"], def:"auto", label:"Theme", hint:"Auto follows your phone"},
-  {key:"nonum",   type:"bool", def:0,          label:"Also show zones without a number", hint:"HX zones whose number isn't known yet — nothing to dial"},
+  /* Off by default: a button that can't be dialled misses the point of a
+     speed-dial. The entries stay in data.js either way — see CLAUDE.md. */
+  {key:"nonum",   type:"bool", def:0,          label:"Show zones with no number", hint:"Nothing to dial, but you'll know they're there"},
   {key:"valign",  type:"enum", options:["top","center","bottom"], def:"top", only:"widget",
-   label:"Vertical position", hint:"Where the chips sit when the widget is taller than the results"},
+   label:"Where the buttons sit", hint:"When the widget is taller than the list of results"},
   {key:"hide",    type:"set",  def:"",
-   label:"Hidden zones", hint:"Zones you already watch another way. Still listed under SHOW ALL"}
+   label:"Hidden zones", hint:"Ones you already watch elsewhere. Still under SHOW ALL"}
 ];
 
 /* `only` marks a parameter that belongs to one view. app.html skips the

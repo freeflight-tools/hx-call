@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HX Call — social preview card</title>
+<!-- ══════════════════════════════════════════════════════════════════════
+     Generates og-hxcall.png, the 1200x630 image chat apps show when the
+     link is pasted. Build-time only: nothing in the shipped pages loads
+     this, and it is deliberately NOT in sw.js's precache — a scraper-only
+     image has no business in a cache that exists to work at 3000 m.
+
+     Two commands, from the repo root, with a server already running:
+
+       CH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+       # 1. the screenshot, at the exact aspect the frame below expects.
+       #    --window-size IS the crop: it captures the top of the page.
+       #    Do NOT crop afterwards with `sips -c` — that crops from the
+       #    CENTRE, which silently lops the header off and cost an hour.
+       "$CH" --headless=new --virtual-time-budget=9000 \
+             --window-size=560,668 --screenshot=tools/og-shot.png \
+             "http://localhost:8080/app.html?lat=46.73&lng=8.18&size=0"
+
+       # 2. the card
+       "$CH" --headless=new --virtual-time-budget=5000 \
+             --window-size=1200,630 --screenshot=og-hxcall.png \
+             "http://localhost:8080/tools/og-card.html"
+
+     The position above puts Meiringen INSIDE and Emmen 7.5 km away, so the
+     card shows two real entries with numbers rather than an empty list.
+     Zones still tagged `unverified` will show that tag — leave it. A
+     preview that hides the tag would be advertising something the app
+     itself is careful to admit.
+     ═══════════════════════════════════════════════════════════════════ -->
+<style>
+  @page{margin:0}
+  *{box-sizing:border-box;margin:0}
+  body{
+    width:1200px;height:630px;overflow:hidden;
+    background:#0A1116;color:#E8F0F5;display:flex;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  .l{flex:1;padding:74px 0 74px 78px;display:flex;flex-direction:column;justify-content:center}
+  .brand{display:flex;align-items:center;gap:16px;margin-bottom:34px}
+  .brand .nm{font-size:30px;font-weight:700;letter-spacing:-.02em}
+  h1{font-size:62px;line-height:1.07;letter-spacing:-.034em;font-weight:700;max-width:13ch}
+  p{margin-top:24px;font-size:26px;line-height:1.45;color:#9FB2C0;max-width:24ch}
+  .foot{
+    margin-top:44px;display:flex;align-items:center;gap:12px;
+    font:600 17px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#54A6DC;
+  }
+  .foot span{width:6px;height:6px;border-radius:50%;background:#54A6DC}
+  .r{width:466px;position:relative;display:flex;align-items:center;padding-right:62px}
+  /* height:auto with a source cropped to the same aspect. object-fit:cover
+     here scaled to fill and cropped the sides off instead. */
+  .r .shot{
+    width:100%;border-radius:16px;border:1px solid #2A3B48;overflow:hidden;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.9);position:relative;z-index:1;line-height:0;
+  }
+  .r .shot img{display:block;width:100%;height:auto}
+  .glow{
+    position:absolute;inset:auto -140px -180px -60px;height:460px;
+    background:radial-gradient(closest-side,rgba(84,166,220,.22),transparent);
+  }
+</style>
+</head>
+<body>
+<div class="l">
+  <div class="brand">
+    <!-- The handset from icon.svg, on a ridge. No "HX" lettering: text in an
+         icon is unreadable at 48 px, and the ridge is what says Swiss
+         without borrowing a cross that would imply official endorsement. -->
+    <svg width="58" height="58" viewBox="0 0 64 64" aria-hidden="true">
+      <rect width="64" height="64" rx="15" fill="#151F27"/>
+      <path d="M4 46 L20 27 L28 36 L40 21 L60 46 Z" fill="#24384A"/>
+      <g transform="translate(32 25) rotate(-32) scale(.30)" fill="#54A6DC">
+        <rect x="-96" y="-24" width="192" height="48" rx="24"/>
+        <rect x="-124" y="-24" width="66" height="96" rx="30"/>
+        <rect x="58" y="-24" width="66" height="96" rx="30"/>
+      </g>
+    </svg>
+    <div class="nm">HX Call</div>
+  </div>
+  <h1>Is that airspace on?</h1>
+  <p>Swiss HX zones activate at 30 minutes' notice. This finds the number that tells you.</p>
+  <div class="foot"><span></span>Free Flight Tools</div>
+</div>
+<div class="r">
+  <div class="glow"></div>
+  <div class="shot"><img src="og-shot.png" alt=""></div>
+</div>
+</body>
+</html>

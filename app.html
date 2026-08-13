@@ -11,6 +11,24 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-180.png">
+
+<!-- Social preview. These links get pasted into pilots' chat groups, which is
+     the whole distribution channel — without these tags the paste renders as a
+     bare grey URL. Absolute, not relative: WhatsApp, Telegram and Slack do
+     resolve a relative og:image, but the spec asks for absolute and some
+     scrapers refuse otherwise. Regenerate the card with tools/og-card.html. -->
+<meta name="description" content="Phone numbers for Swiss HX airspaces, sorted by how close you are. Works with no signal.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Free Flight Tools">
+<meta property="og:title" content="HX Call — is that airspace on?">
+<meta property="og:description" content="Swiss HX zones activate at 30 minutes' notice. This finds the recorded line that says whether one is active.">
+<meta property="og:url" content="https://freeflight-tools.github.io/hx-call/app.html">
+<meta property="og:image" content="https://freeflight-tools.github.io/hx-call/og-hxcall.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="HX Call showing the nearest Swiss HX airspaces and their phone numbers.">
+<meta name="twitter:card" content="summary_large_image">
+
 <link rel="stylesheet" href="hx/base.css">
 <style>
 /* ── standalone layout ─────────────────────────────────────────────
@@ -138,6 +156,9 @@ main{padding:8px 8px 4px}
   color:var(--fg);font:600 .85em var(--sans);
 }
 footer{padding:12px 10px;color:var(--dim);font-size:.72em;line-height:1.5;font-family:var(--mono)}
+/* Visible, not a footnote — but quieter than the eVFR warning above it, which
+   is the one that matters in the air. */
+.priv{margin:0;padding:0 10px 14px;color:var(--dim);font-size:.72em;line-height:1.5}
 
 /* ── pointer feedback (see hx/base.css) ─────────────────────────── */
 .call:active{background:var(--rule)}
@@ -172,6 +193,12 @@ footer{padding:12px 10px;color:var(--dim);font-size:.72em;line-height:1.5;font-f
 <main id="list"></main>
 <button class="more" id="more" hidden></button>
 <footer>Verify every number against the current eVFR Manual (AD INFO) before relying on it. Any HX airspace can be activated within 30 minutes.</footer>
+
+<!-- Deliberately one sentence. Both pages ask for GPS at first launch, which is
+     the moment a stranger decides whether to trust the tool; answering the
+     question before it is asked costs a line. It is also literally true here —
+     this page makes no network request at all after the first load. -->
+<p class="priv">Your position never leaves your phone. No accounts, no analytics, nothing sent anywhere.</p>
 
 <details id="sheet">
   <summary>SETTINGS</summary>
