@@ -1,11 +1,11 @@
 /* ══════════════════════════════════════════════════════════════════════
-   HX CALL — zone data. The single source of truth for every page.
+   HX CALL: zone data. The single source of truth for every page.
 
    id    unique, used as the storage key for the re-check clock
    n     full name (standalone)
-   sn    short name (widget) — keep under ~14 chars, it may wrap
+   sn    short name (widget), keep under ~14 chars, it may wrap
    w     subtitle: local landmarks, so you recognise it without a map
-   p     phone digits for tel:  — omit entirely for "no number on file"
+   p     phone digits for tel:, omit entirely for "no number on file"
    s     phone number as displayed
    lat lon r   triage circle centre and radius in km
    grp   optional group token, so a whole category (heliports, say) can be

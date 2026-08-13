@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════════
-   HX CALL — shared tokens and primitives.
+   HX CALL: shared tokens and primitives.
    Page-specific layout stays inline in each page.
 
    Theme: light by default, dark when the phone asks for it, forced by
@@ -67,7 +67,7 @@
 
 /* The pages hide elements with the `hidden` property, which the browser
    applies as a low-priority [hidden]{display:none}. Any author rule that
-   sets `display` — an id selector, or `all:unset` — silently outranks it
+   sets `display`, such as an id selector or `all:unset`, silently outranks it
    and the element stays on screen. Restate it here so `hidden` always wins. */
 [hidden]{display:none !important}
 

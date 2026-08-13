@@ -7,7 +7,7 @@ investigation is done and the findings are in `docs/background.md`.
 
 Two projects already show live HX airspace status by reading the ATIS. Find out
 how, then decide whether HX Call should consume that data as an **optional
-layer** on top of the phone list — never as a replacement for it.
+layer** on top of the phone list, never as a replacement for it.
 
 | | |
 |---|---|
@@ -32,8 +32,8 @@ From the pdcs.ch blog post of 13 April 2026:
 - The widget queries the status **once per minute, at Skyguide**.
 - It **turns red after 4 minutes** without an internet connection.
 - It **auto-hides** when you aren't near Bern, using the XCTrack position.
-- `xct.html` shows two badges, `W` and `E` — west approach (TMA 4) and east
-  approach (TMA 6) — small, in the top right, over the map.
+- `xct.html` shows two badges, `W` and `E`, west approach (TMA 4) and east
+  approach (TMA 6). Small, in the top right, over the map.
 - Lukas's own disclaimer: informational only, must not be used to decide entry
   or to monitor status in flight; use 125.130 MHz or 022 417 40 76 for that.
 
@@ -41,13 +41,13 @@ From the pgairspace XCTrack guide:
 
 - `?area=bern`, and areas include Meiringen.
 - `&sub=ctr,t1,t2` filters sub-areas.
-- `&transcript=[hide|only]` — it displays a **transcript**, and recommends
+- `&transcript=[hide|only]`: it displays a **transcript**, and recommends
   keeping it visible so the pilot can double-check.
 - Suggests two widgets (one `hide`, one `only`) to give the transcript a
   horizontal panel, since a vertical one squishes it.
 
 **"Transcript" implies audio.** You transcribe speech, not JSON. That points to
-a speech-to-text pipeline over the ATIS broadcast rather than a data feed —
+a speech-to-text pipeline over the ATIS broadcast rather than a data feed,
 which would also explain why the raw text is shown for verification. Possible
 input: the `lszb-atc` GitHub organisation publishes ATC audio streams from
 Bern-Belp including an ATIS channel.
@@ -61,7 +61,7 @@ actually reach these hosts.
    the `<script src>` tags. Fetch the referenced JS, pretty-print it
    (`npx js-beautify`), and grep for `fetch(`, `XMLHttpRequest`, `https://`.
    For a small hand-written page this alone may be enough.
-2. Same for pgairspace, but it's a React build — minified, chunked. Grep the
+2. Same for pgairspace, but it's a React build, minified, chunked. Grep the
    chunks for URL literals.
 3. If that's inconclusive, use Playwright to watch the network for one poll
    cycle:
@@ -83,7 +83,7 @@ await b.close();
 ## The questions that actually decide this
 
 - **Same-origin or not?** If the call goes to `bern.pdcs.ch/api/...` rather
-  than a skyguide host, it's proxied server-side — meaning the upstream needs
+  than a skyguide host, it's proxied server-side, meaning the upstream needs
   auth or blocks CORS, and a static GitHub Pages site cannot call it directly.
   The fact that this lives on its own subdomain rather than the club's
   WordPress hints at exactly that.
@@ -104,5 +104,5 @@ Design constraints from `CLAUDE.md` that apply:
 - Stale data announces itself; copy the 4-minute red rule.
 - Live status never suppresses the phone number.
 - No build step, no runtime dependency for the offline path. If live status
-  needs a server, it belongs behind a feature flag and a separate host — the
+  needs a server, it belongs behind a feature flag and a separate host, the
   core stays static.

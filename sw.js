@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════════
-   HX CALL — offline cache.
+   HX CALL: offline cache.
 
    The phone list has to work at 3000 m with no signal, which is the whole
    point of the project, so every file is precached on first visit and
@@ -7,7 +7,7 @@
 
    Strategy is stale-while-revalidate, not cache-first: the cached copy is
    returned immediately, and a fresh copy is fetched in the background for
-   next time. That matters here — a corrected phone number must be able to
+   next time. That matters here: a corrected phone number must be able to
    reach a pilot who has already installed the page, and it does so on the
    next load rather than never.
 

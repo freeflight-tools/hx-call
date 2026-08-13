@@ -1,10 +1,10 @@
 /* ══════════════════════════════════════════════════════════════════════
-   HX CALL — settings fields, generated from HX.SPEC.
+   HX CALL: settings fields, generated from HX.SPEC.
 
    Shared by app.html and index.html so the two can never drift apart, and
    so a new parameter needs no hand-written control anywhere. The markup is
-   deliberately plain — a .field row holding a <label> with a <small> hint
-   and one input — and each page styles it to taste.
+   deliberately plain: a .field row holding a <label> with a <small> hint
+   and one input, and each page styles it to taste.
 
    The only DOM-touching file besides the pages themselves. core.js stays
    clean of it, which is what keeps the engine testable.

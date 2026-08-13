@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>HX Call — social preview card</title>
+<title>HX Call: social preview card</title>
 <!-- ══════════════════════════════════════════════════════════════════════
      Generates og-hxcall.png, the 1200x630 image chat apps show when the
      link is pasted. Build-time only: nothing in the shipped pages loads
-     this, and it is deliberately NOT in sw.js's precache — a scraper-only
+     this, and it is deliberately NOT in sw.js's precache. A scraper-only
      image has no business in a cache that exists to work at 3000 m.
 
      Two commands, from the repo root, with a server already running:
@@ -15,7 +15,7 @@
 
        # 1. the screenshot, at the exact aspect the frame below expects.
        #    --window-size IS the crop: it captures the top of the page.
-       #    Do NOT crop afterwards with `sips -c` — that crops from the
+       #    Do NOT crop afterwards with `sips -c`, which crops from the
        #    CENTRE, which silently lops the header off and cost an hour.
        "$CH" --headless=new --virtual-time-budget=9000 \
              --window-size=560,668 --screenshot=tools/og-shot.png \
@@ -28,7 +28,7 @@
 
      The position above puts Meiringen INSIDE and Emmen 7.5 km away, so the
      card shows two real entries with numbers rather than an empty list.
-     Zones still tagged `unverified` will show that tag — leave it. A
+     Zones still tagged `unverified` will show that tag. Leave it: a
      preview that hides the tag would be advertising something the app
      itself is careful to admit.
 

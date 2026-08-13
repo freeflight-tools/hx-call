@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════════
-   HX CALL — service worker registration.
+   HX CALL: service worker registration.
 
    Kept apart from core.js, which has no side effects by design. Every
    failure path is swallowed on purpose: an old Android WebView that has no

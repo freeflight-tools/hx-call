@@ -4,16 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0A1116">
-<title>HX Call — Swiss HX airspace phone directory</title>
+<title>HX Call: Swiss HX airspace phone directory</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-180.png">
 
-<!-- Social preview — see the note in app.html. Regenerate with tools/og-card.html. -->
+<!-- Social preview. See the note in app.html. Regenerate with tools/og-card.html. -->
 <meta name="description" content="Phone numbers for Swiss HX airspaces, sorted by how close you are. Works with no signal.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Free Flight Tools">
-<meta property="og:title" content="HX Call — is that airspace on?">
+<meta property="og:title" content="HX Call: is that airspace on?">
 <meta property="og:description" content="Swiss HX zones activate at 30 minutes' notice. This finds the recorded line that says whether one is active.">
 <meta property="og:url" content="https://freeflight-tools.github.io/hx-call/">
 <meta property="og:image" content="https://freeflight-tools.github.io/hx-call/og-hxcall.png">
@@ -122,7 +122,7 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
   <h1>HX Call</h1>
   <p class="sub">
     Phone numbers for Swiss <b>HX</b> airspaces, sorted by how close you are.
-    HX means no fixed operating hours — the zone can be activated at 30 minutes'
+    HX means no fixed operating hours. The zone can be activated at 30 minutes'
     notice, and you're allowed to check its status by phone. Useful if you don't
     carry a VHF radio.
   </p>
@@ -130,7 +130,7 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
   <div class="pick">
     <a id="toapp" href="app.html">
       <b>App →</b>
-      <span>Full list with landmarks and notes. Add it to your home screen — works offline.</span>
+      <span>Full list with landmarks and notes. Add it to your home screen, and it works offline.</span>
     </a>
     <a id="towidget" href="widget.html">
       <b>XCTrack Widget →</b>
@@ -154,10 +154,10 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
   <h2>Add it to XCTrack</h2>
   <ol>
     <li>Add a <b>Web page</b> widget and paste the URL above.</li>
-    <li>Turn on <b>Allow web page to access XCTrack data</b> — this is what gives it your position.</li>
+    <li>Turn on <b>Allow web page to access XCTrack data</b>. This is what gives it your position.</li>
     <li>Turn on <b>Allow tapping on the web page when locked</b>, or you can't press the call button in flight.</li>
     <li>Turn on <b>Disable unlocking</b> so a stray swipe doesn't rearrange it.</li>
-    <li>Set <b>refresh rate to 0</b> — the page updates itself.</li>
+    <li>Set <b>refresh rate to 0</b>. The page updates itself.</li>
   </ol>
 
   <p class="note">
@@ -170,7 +170,7 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
 
   <p class="warn">
     This is a phone directory, not an airspace tool. It has no boundaries and no
-    altitudes — use your flight computer for those. Numbers marked
+    altitudes, so use your flight computer for those. Numbers marked
     <b>unverified</b> still need checking against the current eVFR Manual.
     If you can't confirm a status, the airspace is active.
   </p>
@@ -232,7 +232,7 @@ function refreshLinks(){
   drawQr(urlBox.value);
 }
 
-/* fields generated from HX.SPEC — the same renderer the app's sheet uses,
+/* fields generated from HX.SPEC, the same renderer the app's sheet uses,
    and here nothing is skipped: this is where widget URLs get built */
 const fields = HX.fields(document.getElementById("fields"), {
   onChange: refreshLinks

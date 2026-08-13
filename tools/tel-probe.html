@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>HX Call — tel: probe</title>
+<title>HX Call: tel: probe</title>
 <link rel="stylesheet" href="../hx/base.css">
 <style>
 /* ── Diagnostic tool, not part of the app ──────────────────────────────
@@ -87,7 +87,7 @@ const KEY = "hxTelProbe";
 
 const TESTS = [
   {id:"anchor-tel",   kind:"a",   href:"tel:" + NUM,
-   label:"1. tel: as a link",     note:'<a href="tel:…"> — what the widget uses today'},
+   label:"1. tel: as a link",     note:'<a href="tel:…">, what the widget uses today'},
   {id:"assign-tel",   kind:"btn", label:"2. tel: by assignment",
    note:"location.href = 'tel:…'", go:function(){ location.href = "tel:" + NUM; }},
   {id:"intent-dial",  kind:"btn", label:"3. intent:// to the dialer",
@@ -97,16 +97,16 @@ const TESTS = [
        "#Intent;scheme=tel;action=android.intent.action.DIAL;end";
    }},
   {id:"open-tel",     kind:"btn", label:"4. tel: in a new window",
-   note:"window.open('tel:…','_blank') — needs multiple windows in the host",
+   note:"window.open('tel:…','_blank'), needs multiple windows in the host",
    go:function(){ window.open("tel:" + NUM, "_blank"); }},
   {id:"blank-https",  kind:"a",   href:"../index.html", target:"_blank",
    label:"5. https link, new window",
-   note:'target="_blank" — does an ordinary link escape to the browser?'},
+   note:'target="_blank": does an ordinary link escape to the browser?'},
   {id:"plain-https",  kind:"a",   href:"../index.html",
    label:"6. https link, same window",
    note:"the control: this should simply load inside the widget"},
   {id:"clipboard",    kind:"btn", label:"7. copy to clipboard",
-   note:"the fallback if nothing above dials — no navigation",
+   note:"the fallback if nothing above dials, no navigation",
    go:function(done){
      const write = function(ok, how){ done(ok ? "copied via " + how : "both methods failed"); };
      if (navigator.clipboard && navigator.clipboard.writeText){

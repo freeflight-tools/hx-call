@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════════
-   HX CALL — shared engine. No DOM, no rendering.
+   HX CALL: shared engine. No DOM, no rendering.
 
    Everything both pages need lives here so they can't drift apart:
    the config spec, URL parsing, position sources, distance ranking and
@@ -28,12 +28,12 @@
 
 const SPEC = [
   /* `hint` IS THE PILOT'S TEXT. One short line, read one-handed on a phone in
-     gloves — never a description of the mechanism. Anything explaining *why* a
+     gloves, never a description of the mechanism. Anything explaining *why* a
      default is what it is belongs in a comment here, where the next developer
      looks and the pilot does not. Rewritten 2026-08-13; do not let
      "At most this many of the matching zones are listed" creep back. */
   {key:"max",     type:"int",  min:1, max:99,  def:4,      label:"How many zones to show", hint:"The nearest ones first"},
-  /* Distance is to the zone EDGE, not its centre — and the circles in data.js
+  /* Distance is to the zone EDGE, not its centre, and the circles in data.js
      are deliberately oversized triage radii, so this is generous by design. */
   {key:"range",   type:"int",  min:1, max:999, def:10,     label:"Hide zones further than",  unit:"km", hint:"Measured to the edge of the zone, not its centre"},
   /* 60 s is deliberate: status changes on a 15–30 min cycle, so a faster poll
@@ -42,7 +42,7 @@ const SPEC = [
   {key:"size",    type:"int",  min:0, max:100, def:0,      label:"Text size", unit:"%", hint:"Bigger text and bigger buttons"},
   {key:"theme",   type:"enum", options:["auto","dark","light"], def:"auto", label:"Theme", hint:"Auto follows your phone"},
   /* Off by default: a button that can't be dialled misses the point of a
-     speed-dial. The entries stay in data.js either way — see CLAUDE.md. */
+     speed-dial. The entries stay in data.js either way. See CLAUDE.md. */
   {key:"nonum",   type:"bool", def:0,          label:"Show zones with no number", hint:"Nothing to dial, but you'll know they're there"},
   {key:"valign",  type:"enum", options:["top","center","bottom"], def:"top", only:"widget",
    label:"Where the buttons sit", hint:"When the widget is taller than the list of results"},
@@ -102,7 +102,7 @@ function pairOf(v){
 
 function clamp(spec, raw){
   /* A set is checked before the empty-string guard below: "" is a real
-     value here — nothing hidden — and rejecting it would make the last
+     value here, nothing hidden, and rejecting it would make the last
      box impossible to untick, since setConfig skips nulls.
 
      Unknown tokens are kept rather than dropped. A URL built against a
@@ -185,7 +185,7 @@ const USE_GEO = !PINNED && !HAS_XCT && !urlFix;
 /* An Android WebView resolves http(s) and nothing else unless the host app
    forwards other schemes, and XCTrack's does not: a tel: link lands on the
    "Web page not available" page and the widget is stuck there until it
-   reloads. Measured on device — tel:, intent://…DIAL and window.open all
+   reloads. Measured on device: tel:, intent://…DIAL and window.open all
    fail, and only the clipboard works. Detected by the JS interface, or by
    the "wv" token Android puts in a WebView user agent; Chrome proper does
    not carry it, so an ordinary phone browser still dials.
@@ -212,7 +212,7 @@ function selectZones(){
 
 /* A zone is hidden by its own id or by its group, so a future `grp:"heli"`
    can be switched off with one token instead of a dozen. Group names must
-   not collide with zone ids — they share this one namespace. */
+   not collide with zone ids, since they share this one namespace. */
 function isHidden(z){
   return hideSet[z.id] === true || (!!z.grp && hideSet[z.grp] === true);
 }
@@ -249,7 +249,7 @@ function startWatch(){
 }
 
 /* Only auto-start without a user gesture when permission is already
-   granted — iOS will not reliably show the sheet otherwise. */
+   granted, or iOS will not reliably show the sheet otherwise. */
 function initGeo(){
   if (!navigator.geolocation){ geoState = "insecure"; emit(); return; }
   if (!global.isSecureContext && location.protocol !== "file:"){ geoState = "insecure"; emit(); return; }
@@ -344,7 +344,7 @@ function compute(){
     // without a trustworthy fix the limits are ignored: hiding zones
     // confidently on a bad position is worse than a longer list.
     // Excluded zones fail `strict`, so the widget never draws them, while
-    // SHOW ALL still reaches them in app.html — hidden in the air, never
+    // SHOW ALL still reaches them in app.html: hidden in the air, never
     // unreachable while planning.
     r.strict  = showAll || (!r.excluded && (!trust || (k < cfg.max && r.dist <= cfg.range)));
     r.visible = r.strict || (keepNearest && k === nearestKept);
