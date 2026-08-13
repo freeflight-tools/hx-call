@@ -19,7 +19,7 @@
        #    CENTRE, which silently lops the header off and cost an hour.
        "$CH" --headless=new --virtual-time-budget=9000 \
              --window-size=560,668 --screenshot=tools/og-shot.png \
-             "http://localhost:8080/app.html?lat=46.73&lng=8.18&size=0"
+             "http://localhost:8080/app.html?lat=46.73&lng=8.18&size=0&theme=light"
 
        # 2. the card
        "$CH" --headless=new --virtual-time-budget=5000 \
@@ -31,6 +31,11 @@
      Zones still tagged `unverified` will show that tag — leave it. A
      preview that hides the tag would be advertising something the app
      itself is careful to admit.
+
+     `theme=light` is PINNED, not incidental. Without it the capture
+     follows the laptop's appearance setting, so the same command gives
+     a light card by day and a dark one after dark. The card ground is
+     dark either way; a light screenshot is what gives it contrast.
      ═══════════════════════════════════════════════════════════════════ -->
 <style>
   @page{margin:0}
