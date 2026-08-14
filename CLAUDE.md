@@ -84,7 +84,7 @@ to them.
   reloads would miss the cache every time. Bump `CACHE` when the file list
   changes.
 - **No dependencies, no build step, and the phone list works with no network.**
-  It runs offline at 3000 m on a phone with no signal. Adding npm, a bundler or
+  It runs at 3000 m on a phone with no data connection. Adding npm, a bundler or
   a CDN import defeats the design. Any geo library costs more than the ~20 lines
   of maths it would replace.
 - **`hx/core.js` touches no DOM and renders nothing.** It hands pages a state

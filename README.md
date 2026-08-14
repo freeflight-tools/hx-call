@@ -28,7 +28,7 @@ hx/base.css     colour tokens, light/dark, shared primitives
 hx/fields.js    settings fields, generated from HX.SPEC for both pages
 hx/qr.js        QR encoder, launcher page only, never loaded in flight
 hx/offline.js   registers the service worker, failures ignored on purpose
-sw.js           precaches everything so the list works with no signal
+sw.js           precaches everything so the list needs no data connection
 ```
 
 No dependencies, no build step, no network at runtime. Any static host: GitHub Pages, Netlify, or a local file.
@@ -64,7 +64,7 @@ Open `app.html` in any browser and allow location when asked. Needs `https://`. 
 
 Open the app and add it to the home screen. *Share → Add to Home Screen* on iOS, *⋮ → Add to Home screen* on Android. It launches full screen, without browser chrome, straight into the list.
 
-**It then works with no signal.** Everything is cached on first visit, so the numbers are there at 3000 m with no data connection, which is the point. Corrections still reach you: the cached copy is shown immediately and a fresh one is fetched in the background for next time, so an updated number arrives on the following launch rather than never.
+**It then needs no data connection.** Everything is cached on first visit, so the numbers are there at 3000 m with no internet, which is the point. You still need enough phone signal to place the call, of course: what is cached is the directory, not the answer. Corrections still reach you: the cached copy is shown immediately and a fresh one is fetched in the background for next time, so an updated number arrives on the following launch rather than never.
 
 The widget caches itself the same way, though whether XCTrack's WebView allows it is untested. If it doesn't, the widget behaves exactly as before, online only. Offline is an enhancement here, never something the phone list depends on.
 

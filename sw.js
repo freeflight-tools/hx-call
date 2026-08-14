@@ -1,9 +1,11 @@
 /* ══════════════════════════════════════════════════════════════════════
    HX CALL: offline cache.
 
-   The phone list has to work at 3000 m with no signal, which is the whole
-   point of the project, so every file is precached on first visit and
-   served from the cache afterwards.
+   The phone list has to work at 3000 m with no data connection, which is
+   the point of the project, so every file is precached on first visit and
+   served from the cache afterwards. Note the limit: what this makes
+   available offline is the DIRECTORY, not the answer. Placing the call
+   still needs phone signal.
 
    Strategy is stale-while-revalidate, not cache-first: the cached copy is
    returned immediately, and a fresh copy is fetched in the background for
