@@ -449,19 +449,30 @@ const HX = {
 
   setShowAll: function(v){ showAll = !!v; emit(); },
 
-  /* widget style: 0 when inside, one decimal below 1 km, whole km above */
+  /* EVERY DISTANCE CARRIES A `~`, AND `d <= 0` NEVER PRINTS A NUMBER.
+     Both views measure to the edge of an oversized triage circle, so the
+     figure is an approximation of a deliberate over-estimate, and the old
+     `0` / `INSIDE` claimed the one thing the circles cannot support: that
+     the pilot is in the airspace. Measured at Brunni on 2026-08-14, a
+     tracklog replay showed MEIRINGEN and EMMEN both at `0` while 25.6 and
+     21.8 km from their centres, 420 m and 4.2 km inside circles of 26 km.
+     `IN RANGE` says what is actually known: the zone is close enough to be
+     worth a call. Don't put the number back, and don't drop the `~`. */
+  IN_RANGE: "IN RANGE",
+
+  /* widget style: no decimal above 1 km */
   fmtShort: function(d){
     if (d === null) return "";
-    if (d <= 0) return "0";
-    if (d < 1)  return d.toFixed(1);
-    return String(Math.round(d));
+    if (d <= 0) return HX.IN_RANGE;
+    if (d < 1)  return "~" + d.toFixed(1);
+    return "~" + Math.round(d);
   },
   /* standalone style: keeps a decimal until 10 km */
   fmtLong: function(d){
     if (d === null) return "-";
-    if (d <= 0) return "INSIDE";
-    if (d < 10) return d.toFixed(1);
-    return String(Math.round(d));
+    if (d <= 0) return HX.IN_RANGE;
+    if (d < 10) return "~" + d.toFixed(1);
+    return "~" + Math.round(d);
   },
 
   refresh: emit

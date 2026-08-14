@@ -371,7 +371,10 @@ HX.start(function(st){
     n++;
 
     const dTxt = st.fix ? HX.fmtLong(r.dist) : "-";
-    const uTxt = !st.fix ? "NO FIX" : (r.inside ? "lateral" : "km " + r.compass);
+    /* No unit under IN RANGE: "lateral" read as a measurement qualifier on
+       a number that is no longer there. The bearing stays, it is still the
+       way to the circle's centre. */
+    const uTxt = !st.fix ? "NO FIX" : (r.inside ? r.compass : "km " + r.compass);
     if (c.lastD !== dTxt){ c.d.nodeValue = dTxt; c.lastD = dTxt; }
     if (c.lastU !== uTxt){ c.u.nodeValue = uTxt; c.lastU = uTxt; }
     const rc = r.inside ? "rng in" : "rng";

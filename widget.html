@@ -42,17 +42,30 @@ body{padding:2px}
 .chip.due{border-left-color:var(--amber)}
 .chip.na{border-left-color:var(--dim);opacity:.8}
 
-.top{display:flex;align-items:baseline;gap:calc(4px * var(--scale))}
+/* THE DISTANCE TAKES ITS OWN LINE RATHER THAN OVERLAPPING THE NAME.
+   `.nm` used to carry `min-width:0`, which lets flex shrink it below its
+   longest word; an unbreakable name (MEIRINGEN, DÜBENDORF, EPLATURES, all
+   nine characters against ~97px of chip) then overflows straight UNDER the
+   distance instead of pushing it aside. It never showed while the widest
+   label was "0 km". "IN RANGE" is eight characters and even "~0.6" is one
+   wider than "0.6", so both now reach it. Without `min-width:0` the name
+   holds its min-content width, `flex-wrap` moves the distance to a second
+   line when it no longer fits, and `justify-content` keeps it right where
+   the eye already looks for it. Don't put `min-width:0` back. */
+.top{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:baseline;gap:calc(4px * var(--scale))}
 .nm{
-  flex:1;min-width:0;
+  flex:1;
   font-size:calc(11px * var(--scale));font-weight:800;line-height:1.1;
-  letter-spacing:.02em;
+  letter-spacing:.02em;overflow-wrap:break-word;
 }
 .km{
   flex:none;font-family:var(--mono);
   font-size:calc(13px * var(--scale));font-weight:700;line-height:1;
 }
+/* Smaller because it is a word, not a figure: eight characters at the
+   distance's own size would take a second line in every chip. */
 .chip.inside .km{color:var(--amber)}
+.chip.inside .km b{font-size:.62em;letter-spacing:.06em}
 .km s{text-decoration:none;font-size:.62em;font-weight:400;color:var(--dim);margin-left:1px}
 
 .ph{
@@ -149,6 +162,9 @@ function chipFor(z){
   const km = document.createElement("span");
   km.className = "km";
   km.innerHTML = '<b></b><s>km</s>';
+  /* <s> is emptied, not hidden, when the chip reads IN RANGE: the unit is
+     a text node already being compared, so this costs no extra write and
+     no second state to keep in step with lastKm. */
   top.appendChild(nm); top.appendChild(km);
 
   const ph = document.createElement("span");
@@ -157,7 +173,7 @@ function chipFor(z){
 
   el.appendChild(top); el.appendChild(ph);
   return (made[z.id] = {
-    el:el, km:km.querySelector("b"), ph:ph,
+    el:el, km:km.querySelector("b"), un:km.querySelector("s"), ph:ph,
     lastCls:"", lastKm:"", lastPh:""
   });
 }
@@ -178,7 +194,11 @@ HX.start(function(st){
     n++;
 
     const kmTxt = st.fix ? HX.fmtShort(r.dist) : "";
-    if (c.lastKm !== kmTxt){ c.km.textContent = kmTxt; c.lastKm = kmTxt; }
+    if (c.lastKm !== kmTxt){
+      c.km.textContent = kmTxt;
+      c.un.textContent = kmTxt === HX.IN_RANGE ? "" : "km";
+      c.lastKm = kmTxt;
+    }
 
     // the phone line doubles as the re-check warning
     const phTxt = !r.z.p ? "no number"

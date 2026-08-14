@@ -37,6 +37,17 @@ to them.
   deliberately oversized triage radii. Never tighten one to "improve accuracy",
   and never present them as boundaries. An extra entry on screen costs nothing;
   a missing one costs an airspace violation.
+- **The display must not out-claim the circles.** Every distance prints with a
+  leading `~`, and `d <= 0` prints `HX.IN_RANGE` ("IN RANGE"), never a number.
+  It used to read `0` in the widget and `INSIDE` on the page, which both
+  asserted the one thing a triage radius cannot support: that the pilot is in
+  the airspace. A tracklog replay at Brunni on 2026-08-14 showed MEIRINGEN and
+  EMMEN at `0` while 25.6 and 21.8 km from their centres, i.e. 420 m and 4.2 km
+  inside 26 km circles and nowhere near either boundary. Don't put the number
+  back, and don't drop the `~`. There is also **no altitude test anywhere**: a
+  TMA sector shows the same at 800 m as at 3000 m, which is deliberate under
+  the same "an extra entry costs nothing" rule, and another reason the figure
+  must not read as a measurement.
 - **Never delete a zone that has no phone number.** They stay in `hx/data.js`
   and render as "no number on file" when shown. `nonum` decides whether they
   are displayed; it defaults to 0, because a button that can't be dialled

@@ -100,7 +100,9 @@ An unsubstituted placeholder (the literal `${lat}`) is ignored rather than misre
 
 One entry is one phone call: zones sharing a number appear once.
 
-Distance is to the **edge** of the zone, not its centre. In the widget: `0` means you're laterally inside, one decimal below 1 km, whole km above. The full page says `INSIDE` and adds a bearing.
+Distance is to the **edge** of the zone, not its centre, and every figure carries a `~` because the zones are oversized circles rather than real boundaries. The widget keeps one decimal below 1 km and whole km above; the full page keeps a decimal to 10 km and adds a bearing.
+
+`IN RANGE` replaces the number once you're inside the circle. It does **not** mean you are in the airspace, only that the zone is close enough to be worth a call. The circles are generous by design, so you can read `IN RANGE` while still well outside the real boundary. Your flight computer has the boundaries; this page has the phone numbers.
 
 Colour on the left edge: blue = not checked, green = checked and still valid, amber = re-check due, grey = no number on file.
 
