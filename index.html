@@ -25,29 +25,80 @@
 <link rel="stylesheet" href="hx/base.css">
 <style>
 body{background:var(--ink);padding:0 0 40px}
-.wrap{max-width:640px;margin:0 auto;padding:20px 14px}
+/* the column follows ?size= like everything else on the page. It was a fixed
+   640px, so at size=100 the type doubled inside a column that did not move. */
+.wrap{max-width:calc(640px * var(--scale));margin:0 auto;padding:20px 14px}
 h1{margin:0 0 4px;font-size:1.5em;letter-spacing:-.01em}
 .sub{margin:0 0 20px;color:var(--dim);font-size:.92em;line-height:1.5}
-h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.sub b{color:var(--fg)}
+button{font:600 .9em var(--sans);cursor:pointer}
+h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
 
-.pick{display:grid;gap:10px;grid-template-columns:1fr 1fr}
-.pick a{
-  display:block;padding:14px;background:var(--panel);border:1px solid var(--rule);
-  border-radius:4px;text-decoration:none;color:var(--fg);box-shadow:var(--shadow);
-}
-.pick b{display:block;font-size:1em;margin-bottom:3px}
-.pick span{display:block;font-size:.8em;color:var(--dim);line-height:1.4}
+/* ── family styling ──────────────────────────────────────────────────
+   Follows freeflight-tools.github.io, where each tool owns one colour and
+   the band is where that colour lives: HX Call the blue of its handset,
+   Windmap the amber of its own arrow. Here that is the kicker above the
+   title and the action the page exists for.
+
+   This tool's accent happens to be the blue `--chart` already is, so unlike
+   the Windmap setup page nothing changes hue. It is still declared as its
+   own token, because `--chart` means "the colour data is drawn in" and the
+   two are only coincidentally equal.
+
+   Declared on bare :root FIRST and then again in both dark blocks, so no
+   colour has its only definition inside a media query. Same rule base.css
+   follows. */
+:root{--accent:#1F6FD0;--wash:#F1F7FE;--wash-line:#CDE0F6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --accent:#6DB0F2;--wash:#0B1622;--wash-line:#1F3B57}}
+[data-theme="dark"]{--accent:#6DB0F2;--wash:#0B1622;--wash-line:#1F3B57}
+
+/* The kicker from the family page's tool bands, with the same handset glyph.
+   `em`-based rather than the family page's fixed 11px, so it still follows
+   ?size= like the rest of this page. The trailing translate(0 -24) centres
+   the handset before it is rotated: its own box is 248x96 centred on (0,24),
+   so rotating about the origin throws it off the viewBox. */
+.eyebrow{margin:0 0 7px;display:flex;align-items:center;gap:8px;
+  font:600 .78em/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent)}
+.eyebrow svg{flex:none}
+/* The GTranslate switcher is position:fixed at top:12px right:12px, and the
+   kicker is now the first line on the page. The kicker runs ~260px and the
+   switcher's left edge is at width-84 with "EN" (wider in a language with a
+   longer native name), so the two collide below ~372px. Start the page under
+   the switcher there rather than beside it: a wrapped two-line kicker in
+   letterspaced uppercase looks far worse than 32px of space, and if the CDN
+   is unreachable the only cost is that space. */
+@media (max-width:380px){ .wrap{padding-top:52px} }
+
+/* ── the thing you can open ───────────────────────────────────────────
+   A CARD, not a stadium. The stadium marks the one action a page exists
+   for, which here is Copy widget URL. Identical component on the Windmap
+   setup page. It carries the tool's own wash rather than the neutral panel
+   every other box uses, so the one thing here that OPENS something does not
+   read as another note. The wash is the tool's band colour from the family
+   page. */
+.pick{display:grid;gap:10px;margin:0}
+.pick a{display:flex;gap:12px;align-items:flex-start;padding:14px 15px;
+  background:var(--wash);border:1px solid var(--wash-line);border-radius:10px;
+  text-decoration:none;color:var(--fg);box-shadow:var(--shadow)}
+.pick svg{flex:none;color:var(--accent);margin-top:2px}
+.pick b{display:block;font-size:1em;margin-bottom:4px;color:var(--accent)}
+.pick span{display:block;font-size:.82em;color:var(--dim);line-height:1.45}
 
 .field{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule)}
 .field label{flex:1;min-width:0;font-size:.92em}
 .field label small{display:block;color:var(--dim);font-size:.8em}
 .field input[type=number],.field select{
-  width:96px;padding:9px;background:var(--panel);color:var(--fg);
+  width:calc(92px * var(--scale));padding:9px;background:var(--panel);color:var(--fg);
   border:1px solid var(--rule);border-radius:3px;
   font:600 1em var(--mono);text-align:right;
 }
-.field select{text-align:left}
-.field input[type=checkbox]{width:22px;height:22px;accent-color:var(--chart)}
+/* Enums size to their longest option, capped so a long one cannot crowd the
+   label off a narrow phone. Same rule as the Windmap setup page, where a
+   fixed width clipped "bottom-right" to "bottom-". */
+.field select{text-align:left;width:auto;min-width:calc(92px * var(--scale));max-width:45%}
+.field input[type=checkbox]{width:22px;height:22px;flex:none;accent-color:var(--chart)}
 
 /* the hide list: collapsed, so thirteen zones cost one row until wanted */
 .field.set{display:block;position:relative}
@@ -63,18 +114,25 @@ h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.12em;text-transform:upperca
 
 #reset{
   width:100%;padding:10px;margin-top:12px;background:var(--panel-hi);
-  border:1px solid var(--rule);border-radius:3px;
-  color:var(--fg);font:600 .85em var(--sans);
+  border:1px solid var(--rule);border-radius:3px;color:var(--fg);
 }
 #url{
   width:100%;padding:11px;margin-top:12px;background:var(--panel);color:var(--fg);
   border:1px solid var(--rule);border-radius:3px;
-  font:400 .85em var(--mono);word-break:break-all;resize:none;
+  font:400 .82em var(--mono);word-break:break-all;resize:none;
 }
+/* The one action the page exists for, and the only stadium on it: the
+   family page uses that shape for the single action per band. `#reset`
+   stays a neutral panel button, since it undoes work rather than advancing
+   it. White text in both palettes: the dark accent is light enough that the
+   family page flips its CTA text to near-black there, and it does the same
+   here. */
 #copy{
-  width:100%;padding:12px;margin-top:8px;background:var(--chart);border:0;
-  border-radius:3px;color:#fff;font:700 .95em var(--sans);
+  width:100%;padding:13px;margin-top:8px;background:var(--accent);border:0;
+  border-radius:999px;color:#FFF;font:700 .95em var(--sans);
 }
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #copy{color:#06121F}}
+[data-theme="dark"] #copy{color:#06121F}
 /* The code stays dark-on-white in both themes: plenty of scanners refuse an
    inverted symbol, and this one exists to be read by a phone camera. */
 .qr{
@@ -84,8 +142,9 @@ h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.12em;text-transform:upperca
 }
 .qr canvas{display:block;border-radius:2px;image-rendering:pixelated}
 .qr small{color:var(--dim);font-size:.78em;line-height:1.4;text-align:center}
-ol{margin:0;padding-left:1.2em;font-size:.9em;line-height:1.6;color:var(--dim)}
+ol{margin:0;padding-left:1.25em;font-size:.9em;line-height:1.65;color:var(--dim)}
 ol b{color:var(--fg)}
+ol li{margin-bottom:4px}
 .note{
   margin:12px 0 0;padding:10px 12px;background:var(--panel);
   border:1px solid var(--rule);border-radius:3px;
@@ -97,20 +156,24 @@ ol b{color:var(--fg)}
   border:1px solid var(--amber-line);border-radius:3px;
   color:var(--amber);font-size:.82em;line-height:1.45;
 }
+/* Emphasis inside an amber panel has to move with the theme. On the Windmap
+   pages a hardcoded dark-theme tint put the safety warning's bold words at
+   roughly no contrast on the light background, so the emphasised text was
+   the least legible in the box. `--amber-str` is the fix, in hx/base.css. */
+.warn b{color:var(--amber-str)}
 .priv{
   margin:22px 0 0;padding:10px 12px;background:var(--panel);
   border:1px solid var(--rule);border-radius:3px;
   color:var(--dim);font-size:.84em;line-height:1.5;
 }
 .priv b{color:var(--fg)}
-footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
+footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--rule);
+  color:var(--dim);font-size:.76em;line-height:1.6}
+footer p{margin:0 0 10px;font-size:1.1em}
 /* The way back to the family page, above the legal line rather than in the
    header: this page protects a single primary action, and a second link at
    the top competes with it. */
-.fam{
-  margin:0 0 12px;padding-bottom:12px;border-bottom:1px solid var(--rule);
-  font-size:1.12em;
-}
+.fam{padding-bottom:12px;border-bottom:1px solid var(--rule)}
 .fam a{font-weight:600}
 /* a plain inline mark on the text baseline. inline-flex on the anchor put
    the link on the icon's baseline instead of the sentence's. */
@@ -120,11 +183,14 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
 .pick a:active,#reset:active{background:var(--panel-hi)}
 #copy:active{filter:brightness(.92)}
 @media (hover:hover) and (pointer:fine){
-  .pick a,#reset,#copy{transition:background-color .12s,border-color .12s,filter .12s}
-  .pick a:hover,#reset:hover{border-color:var(--chart)}
-  #copy:hover{filter:brightness(1.08)}
+  .pick a,#reset,#copy{transition:background-color .12s,border-color .12s,filter .12s,transform .14s}
+  .pick a:hover,#reset:hover{border-color:var(--accent)}
+  /* the family page's lift, same numbers. Gated behind a fine pointer with
+     everything else here: on a touch screen :hover sticks after a tap. */
+  #copy:hover{filter:brightness(1.06);transform:translateY(-1px)}
   .field.set > summary:hover,.setlist label:hover{color:var(--fg)}
 }
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 
 /* ── language switcher (GTranslate) ─────────────────────────────────
    Setup page only. Never app.html or widget.html: those are read in the
@@ -172,24 +238,39 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
 <body>
 <div class="wrap">
 
+  <!-- The same kicker and the same handset glyph as this tool's band on the
+       family page, so the two pages read as one product. The wording is the
+       family page's eyebrow verbatim; if one changes, change both. -->
+  <p class="eyebrow">
+    <svg width="15" height="15" viewBox="0 0 64 64" aria-hidden="true">
+      <g transform="translate(32 32) rotate(-32) scale(.19) translate(0 -24)" fill="currentColor">
+        <rect x="-96" y="-24" width="192" height="48" rx="24"/>
+        <rect x="-124" y="-24" width="66" height="96" rx="30"/>
+        <rect x="58" y="-24" width="66" height="96" rx="30"/>
+      </g>
+    </svg>
+    HX airspace phone directory
+  </p>
   <h1 class="notranslate" translate="no">HX Call</h1>
   <p class="sub">
     Phone numbers for Swiss <b>HX</b> airspaces, sorted by how close you are.
     HX means no fixed operating hours. The zone can be activated at 30 minutes'
-    notice, and you're allowed to check its status by phone. Useful if you don't
-    carry a VHF radio.
+    notice, and where one publishes a number you're allowed to check its status
+    by phone. Useful if you don't carry a VHF radio.
+    <!-- The permission is general (VFR RAC 4-0-0-1 §0.2.2), the numbers are
+         not: 8 of the 13 zones publish one, 5 do not, and `nonum` hides those
+         five by default. Corrected here to match the same sentence on the
+         family page, 2026-08-16. -->
   </p>
 
-  <div class="pick">
-    <a id="toapp" href="app.html">
-      <b>App →</b>
-      <span>Full list with landmarks and notes. Add it to your home screen, and the list needs no data connection.</span>
-    </a>
-    <a id="towidget" href="widget.html">
-      <b>XCTrack Widget →</b>
-      <span>Compact transparent buttons for the <strong>XCTrack</strong> Web page widget. Blank unless something is in range.</span>
-    </a>
-  </div>
+  <!-- NO BUTTONS AT THE TOP, and never one pointing at widget.html. Opened
+       in a normal browser that page is transparent and blank until a zone is
+       in range, so it renders as a white page and reads as broken. It used to
+       be linked from here and did exactly that. The URL box and the QR below
+       are how the widget reaches a phone.
+
+       Same arrangement as the Windmap setup page: the configurator is the
+       page, and the app it also ships gets a card after the steps. -->
 
   <h2>Widget configurator</h2>
   <div id="fields"></div>
@@ -220,6 +301,34 @@ footer{margin-top:26px;color:var(--dim);font-size:.76em;line-height:1.6}
     the nearest zone on screen however far away it is, because there a blank
     page just reads as broken.
   </p>
+
+  <!-- The app, in the slot the Windmap setup page uses for its list. The
+       difference is the billing, and it is deliberate: HX Call is a phone
+       directory, so a plain list needs no map and no overlay and IS the whole
+       product. That makes this the only version available to a pilot on iOS,
+       or to anyone who does not fly with XCTrack. Windmap's list is the
+       mirror image, an extra that loses the point of Windmap without a map. -->
+  <h2>Also: the app, no XCTrack needed</h2>
+  <div class="pick">
+    <a id="toapp" href="app.html">
+      <!-- A phone with one app tile on it: this link opens something you can
+           keep, not another page of instructions. Same glyph on the Windmap
+           setup page, in that tool's colour. -->
+      <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+        <rect x="17" y="5" width="30" height="54" rx="7.5" fill="none"
+              stroke="currentColor" stroke-width="4.5"/>
+        <rect x="25.5" y="20" width="13" height="13" rx="3.6" fill="currentColor"/>
+        <path d="M27.5 47 h9" fill="none" stroke="currentColor" stroke-width="4"
+              stroke-linecap="round"/>
+      </svg>
+      <span>
+        <b>Open the app →</b>
+        The full list with landmarks and notes, in any browser, iPhone included.
+        No XCTrack and no setup. Add it to your home screen and it works with no
+        data connection, which is the point: you need signal to dial, not data.
+      </span>
+    </a>
+  </div>
 
   <p class="warn">
     This is a phone directory, not an airspace tool. It has no boundaries and no
@@ -297,7 +406,9 @@ function drawQr(url){
 function refreshLinks(){
   const w = HX.buildUrl("widget.html");
   const a = HX.buildUrl("app.html");
-  document.getElementById("towidget").href = w;
+  /* No #towidget any more: linking straight to widget.html opened a
+     transparent page that renders white in a browser. The widget URL now
+     only ever leaves this page through the box and the QR below. */
   document.getElementById("toapp").href = a;
   urlBox.value = new URL(w, location.href).href;
   drawQr(urlBox.value);

@@ -19,6 +19,12 @@
   --dim:#5C7180;
   --chart:#1E6FA8;
   --amber:#A96608;
+  /* Emphasis INSIDE an amber panel, and it has to move with the theme. A
+     hardcoded dark-theme tint put a safety warning's bold text at roughly no
+     contrast on the light background, i.e. the emphasised words were the
+     least legible ones in the box. Found and fixed on the Windmap pages
+     first; this is the same token. */
+  --amber-str:#6E4103;
   --red:#B3271C;
   --green:#22794B;
   --amber-bg:#FDF3E0;
@@ -39,6 +45,7 @@
     --dim:#7B909F;
     --chart:#54A6DC;
     --amber:#E9A33C;
+    --amber-str:#F6D9A8;
     --red:#D6483C;
     --green:#4FB477;
     --amber-bg:#241A0B;
@@ -56,6 +63,7 @@
   --dim:#7B909F;
   --chart:#54A6DC;
   --amber:#E9A33C;
+  --amber-str:#F6D9A8;
   --red:#D6483C;
   --green:#4FB477;
   --amber-bg:#241A0B;

@@ -129,6 +129,38 @@ to them.
   whole page periodically, and this is what carries the re-check clock across.
 - Plain ES5-compatible JS, no modules, no transpilation. Old Android WebViews.
 
+**`index.html` never links to `widget.html`, and the app gets a card after the
+setup steps.** The widget was linked from the top of the page and opened a
+**white page**: it is transparent by design and draws nothing until a zone is
+in range, so in a browser there is simply nothing to see, and it reads as
+broken. The URL box and the QR are the only ways that URL leaves this page.
+`refreshLinks()` no longer touches a `#towidget`; re-adding the line without the
+element throws and takes the page's whole link building with it.
+
+**The app card says "no XCTrack needed" in its heading, and that is not
+filler.** This tool is a phone directory, so a plain list needs no map and no
+overlay and IS the whole product, which makes `app.html` the only version
+available to a pilot on iOS or to anyone who does not fly with XCTrack. Worth
+stating outright, because "App" alone leaves a reader to infer it. The sibling
+project is the mirror image: Windmap's list loses the point of Windmap without a
+map, so there the same card is billed as an extra.
+
+**The setup page shares one visual language with Windmap's, and it comes from
+the family page** (`freeflight-tools.github.io`). Change one, change all three.
+Each tool owns a single `--accent`, declared on bare `:root` and re-declared in
+both dark blocks: HX Call the blue of its handset, Windmap the amber of its own
+arrow. It carries the mono kicker above the `<h1>` (with that tool's glyph, and
+the family page's band wording verbatim), the `.pick` card and the one filled
+action. **Exactly one stadium per page**, and it is the action the page exists
+for: Copy widget URL. Everything you can *open* is a `.pick` card, and the card
+carries the tool's `--wash` (its band colour from the family page) plus a
+phone-and-app-tile glyph, rather than the neutral `--panel` every other box
+uses. `.wrap` takes 52px of top padding under 380px, because the GTranslate
+switcher is `position:fixed` at `top:12px right:12px` and would otherwise sit on
+the kicker. `--amber-str` lives in `hx/base.css` for the same reason it does in
+Windmap's: bold text inside an amber panel needs a tint that moves with the
+theme, or the emphasised words become the least legible in the box.
+
 ## Open threads
 
 1. **Five numbers are missing**, Payerne, Dübendorf, Lugano, St. Gallen, Les
