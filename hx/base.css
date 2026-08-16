@@ -4,7 +4,9 @@
 
    Theme: light by default, dark when the phone asks for it, forced by
    <html data-theme="dark|light"> which HX.applyTheme() sets from ?theme=.
-   --scale is set from ?size= (0-100 -> 1.0-2.0).
+   --scale is set from ?size=, which maps 0-100 to 0.85-1.35 with the default
+   of 50 landing on 1.1. Same curve and same default as Windmap, so a given
+   `size` means the same thing in both tools. See hx/core.js applyTheme().
    ══════════════════════════════════════════════════════════════════ */
 
 :root{
@@ -82,7 +84,11 @@
 html,body{
   margin:0;
   color:var(--fg);
-  font:400 calc(14px * var(--scale))/1.35 var(--sans);
+  /* 1.4, matching Windmap. It was 1.35, which left h1 and every inheriting
+     block ~4% tighter than the sibling tool for no reason a reader could see.
+     Safe to change: widget.html sets its own line-height on every text element
+     (1.1 / 1 / 1.1) and app.html does the same on most of its. */
+  font:400 calc(14px * var(--scale))/1.4 var(--sans);
 }
 
 a{color:var(--chart)}

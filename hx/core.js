@@ -39,7 +39,12 @@ const SPEC = [
   /* 60 s is deliberate: status changes on a 15–30 min cycle, so a faster poll
      spends battery to learn nothing. Don't lower the default. */
   {key:"refresh", type:"int",  min:5, max:900, def:60,     label:"Check your position every", unit:"s", hint:"Faster costs battery and changes nothing"},
-  {key:"size",    type:"int",  min:0, max:100, def:0,      label:"Text size", unit:"%", hint:"Bigger text and bigger buttons"},
+  /* Default 50, the MIDPOINT of the 0.85..1.35 curve in applyTheme(), not a
+     percentage: with the curve changed, "0" no longer means "normal", it means
+     the smallest setting. The `%` unit went with it, because 50 does not read
+     as normal size. Same entry as Windmap's, so the two tools answer a given
+     `size` identically. */
+  {key:"size",    type:"int",  min:0, max:100, def:50,     label:"Size", hint:"Text on the pages, buttons in the widget"},
   {key:"theme",   type:"enum", options:["auto","dark","light"], def:"auto", label:"Theme", hint:"Auto follows your phone"},
   /* Off by default: a button that can't be dialled misses the point of a
      speed-dial. The entries stay in data.js either way. See CLAUDE.md. */
@@ -374,7 +379,15 @@ const HX = {
     if (cfg.theme === "auto") el.removeAttribute("data-theme");
     else el.setAttribute("data-theme", cfg.theme);
     el.setAttribute("data-valign", cfg.valign);
-    el.style.setProperty("--scale", (1 + cfg.size / 100).toFixed(3));
+    /* 0.85..1.35 with the default at the midpoint, matching Windmap. This was
+       `1 + size/100`, which put the top of the range at 2x and the DEFAULT at
+       1.0, i.e. the two setup pages rendered 10% apart at rest for no reason a
+       reader could see. Windmap moved off that curve first because `1 +
+       size/100` put its default at 1.5x and overflowed the chip rows on a
+       430px phone; the same overflow was reachable here by dragging the
+       control up. Monotonic in `size` either way, so the control still means
+       one thing to a pilot. */
+    el.style.setProperty("--scale", (0.85 + cfg.size / 200).toFixed(3));
   },
 
   start: function(cb, opts){
