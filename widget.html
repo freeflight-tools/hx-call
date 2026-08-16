@@ -18,9 +18,19 @@ body{padding:2px}
    within. When the results are shorter than the space XCTrack gives us,
    this decides whether they sit against the top, the middle or the
    bottom edge. Ordering is untouched. Nearest is always the first chip. */
+/* THE COLUMN MINIMUM IS SET BY THE LONGEST PHONE NUMBER, not by taste. A
+   trimmed number is worse than a narrow widget: it is the one string this
+   whole tool exists to hand over, and "041 620 91 0…" is not a number you can
+   dial. Measured across every entry in data.js at the chip's own font, 13px
+   mono 700: the widest is `041 620 91 06` at 101.8px, and the chip adds 14px
+   of padding and border, so 116px is the real floor. 124px leaves about one
+   character of slack for a device whose mono fallback is wider than the ones
+   measured here. It was 112px, four short, which is what clipped them.
+
+   Re-measure if the font size changes or a longer number joins the dataset. */
 #grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(calc(112px * var(--scale)),1fr));
+  grid-template-columns:repeat(auto-fill,minmax(calc(124px * var(--scale)),1fr));
   gap:calc(3px * var(--scale));
   align-content:start;
   min-height:calc(100vh - 4px);          /* body padding, 2px top and bottom */
@@ -28,19 +38,28 @@ body{padding:2px}
 [data-valign="center"] #grid{align-content:center}
 [data-valign="bottom"] #grid{align-content:end}
 
+/* A COLUMN, so the number can be pinned to the bottom. Grid items stretch to
+   their row's height, so a chip whose name fits one line used to print its
+   number higher than the chip beside it whose name wrapped to two or three
+   (EMMEN BUOCHS ALPNACH). The numbers are what the eye scans along a row, and
+   they were on three different baselines. See `.ph{margin-top:auto}`. */
 .chip{
-  display:block;text-decoration:none;color:var(--fg);
+  /* ONE token for the re-check state, read by the left border AND the zone
+     name. They were separate declarations and could drift; now a chip cannot
+     show a green edge over an amber name. */
+  --st:var(--chart);
+  display:flex;flex-direction:column;text-decoration:none;color:var(--fg);
   background:var(--panel);
   border:1px solid var(--rule);
-  border-left:calc(3px * var(--scale)) solid var(--chart);
+  border-left:calc(3px * var(--scale)) solid var(--st);
   border-radius:3px;
   padding:calc(4px * var(--scale)) calc(5px * var(--scale));
   box-shadow:0 1px 3px rgba(0,0,0,.35);
   overflow:hidden;
 }
-.chip.fresh{border-left-color:var(--green)}
-.chip.due{border-left-color:var(--amber)}
-.chip.na{border-left-color:var(--dim);opacity:.8}
+.chip.fresh{--st:var(--green)}
+.chip.due{--st:var(--amber)}
+.chip.na{--st:var(--dim);opacity:.8}
 
 /* THE DISTANCE TAKES ITS OWN LINE RATHER THAN OVERLAPPING THE NAME.
    `.nm` used to carry `min-width:0`, which lets flex shrink it below its
@@ -53,8 +72,12 @@ body{padding:2px}
    line when it no longer fits, and `justify-content` keeps it right where
    the eye already looks for it. Don't put `min-width:0` back. */
 .top{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:baseline;gap:calc(4px * var(--scale))}
+/* The name takes the state's colour, so the chip says "checked / due / no
+   number" twice: once on the edge, once on the word the eye lands on first.
+   The NUMBER stays --fg. It is the thing to be read and dialled, and it
+   should not change colour with a state that is about the reading's age. */
 .nm{
-  flex:1;
+  flex:1;color:var(--st);
   font-size:calc(11px * var(--scale));font-weight:800;line-height:1.1;
   letter-spacing:.02em;overflow-wrap:break-word;
 }
@@ -68,13 +91,43 @@ body{padding:2px}
 .chip.inside .km b{font-size:.56em;letter-spacing:.06em}
 .km s{text-decoration:none;font-size:.62em;font-weight:400;color:var(--dim);margin-left:1px}
 
+/* THE NUMBER IS THE PRODUCT. This line was 9px in --dim, which is the styling
+   of a caption, on the one string the whole tool exists to deliver: the app
+   prints it at 1.35em/700 in --fg and the widget printed it two-thirds the
+   size of the distance beside it, in grey. It now matches the distance's size
+   and takes --fg, so it is the darkest thing in the chip.
+
+   `margin-top:auto` is what pins it to the bottom of the stretched chip, so
+   every number in a row shares a baseline whatever its name did.
+
+   Split into two elements because they are two different things: the number,
+   which must be large and dark, and the re-check state, which must not
+   compete with it. One text node could only ever be styled as one or the
+   other, and it was styled as the smaller. */
 .ph{
-  display:block;margin-top:calc(2px * var(--scale));
-  font-family:var(--mono);font-size:calc(9px * var(--scale));
-  color:var(--dim);line-height:1.1;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:calc(4px * var(--scale));
+  margin-top:auto;padding-top:calc(3px * var(--scale));
+  line-height:1.1;
 }
-.ph.due{color:var(--amber);font-weight:700}
+/* `flex:none` and NO ellipsis. The number never gives way: if the state
+   beside it does not fit, `flex-wrap` drops the state to its own line, which
+   costs a few pixels of height instead of the last digits of a number. The
+   grid's column minimum is what guarantees the number itself always fits. */
+.ph b{
+  flex:none;
+  font-family:var(--mono);font-size:calc(13px * var(--scale));font-weight:700;
+  color:var(--fg);white-space:nowrap;
+}
+.ph i{
+  flex:none;font-style:normal;font-family:var(--mono);
+  font-size:calc(8.5px * var(--scale));color:var(--dim);white-space:nowrap;
+}
+/* Due for a re-check: the warning takes over the number's slot, because at
+   that point the number on file is the thing not to trust. */
+.ph.due b{color:var(--amber)}
+.ph.due i{color:var(--amber);font-weight:700}
+/* No number on file is not a reading, so it does not get the reading's weight. */
+.chip.na .ph b{font-size:calc(10px * var(--scale));font-weight:400;color:var(--dim)}
 
 /* ── pointer feedback (see hx/base.css) ───────────────────────────────
    Background only. The left border carries the re-check state, so a
@@ -103,7 +156,7 @@ a.chip:active{background:var(--panel-hi)}
 "use strict";
 
 const grid = document.getElementById("grid");
-const made = {};                 // id -> {el, nm, km, ph, lastCls, lastKm, lastPh}
+const made = {};                 // id -> {el, km, un, ph, no, sfx, last*}
 
 /* Clipboard, both ways round: the async API where it is allowed, the old
    selection trick where it is not. The probe found copying to be the only
@@ -147,11 +200,17 @@ function chipFor(z){
       copyText(z.p);
       HX.markCalled(z.id);          // re-renders, so this must come first
       const c = made[z.id];
-      c.ph.textContent = "COPIED ✓";
+      c.no.textContent = "COPIED ✓";
+      c.sfx.textContent = "";
       clearTimeout(c.flash);
-      /* lastPh is whatever the render loop last computed, so restoring from
-         it stays correct even if the state changed while we were flashing. */
-      c.flash = setTimeout(function(){ c.ph.textContent = c.lastPh; }, 1800);
+      /* lastNo/lastSfx are whatever the render loop last computed, so
+         restoring from them stays correct even if the state changed while we
+         were flashing. Written to the two nodes, never to their container:
+         setting textContent on `.ph` would delete both of them. */
+      c.flash = setTimeout(function(){
+        c.no.textContent = c.lastNo;
+        c.sfx.textContent = c.lastSfx;
+      }, 1800);
     });
   }
 
@@ -167,14 +226,18 @@ function chipFor(z){
      no second state to keep in step with lastKm. */
   top.appendChild(nm); top.appendChild(km);
 
+  /* <b> is the number, <i> the re-check state. Two nodes so the number can be
+     large and dark while the state stays out of its way. */
   const ph = document.createElement("span");
   ph.className = "ph";
-  ph.textContent = z.p ? z.s : "no number";
+  ph.innerHTML = "<b></b><i></i>";
+  ph.querySelector("b").textContent = z.p ? z.s : "no number";
 
   el.appendChild(top); el.appendChild(ph);
   return (made[z.id] = {
-    el:el, km:km.querySelector("b"), un:km.querySelector("s"), ph:ph,
-    lastCls:"", lastKm:"", lastPh:""
+    el:el, km:km.querySelector("b"), un:km.querySelector("s"),
+    ph:ph, no:ph.querySelector("b"), sfx:ph.querySelector("i"),
+    lastCls:"", lastKm:"", lastNo:"", lastSfx:"", lastPhCls:""
   });
 }
 
@@ -200,16 +263,25 @@ HX.start(function(st){
       c.lastKm = kmTxt;
     }
 
-    // the phone line doubles as the re-check warning
-    const phTxt = !r.z.p ? "no number"
-                : r.state === "due"   ? "RE-CHECK " + r.until
-                : r.state === "fresh" ? r.z.s + "  ✓" + r.until
-                : r.z.s;
-    if (c.lastPh !== phTxt){
-      c.ph.textContent = phTxt;
-      c.ph.className = "ph" + (r.state === "due" ? " due" : "");
-      c.lastPh = phTxt;
-    }
+    /* The phone line doubles as the re-check warning, but the two are now
+       separate nodes: `no` is the number, `sfx` the state beside it. Only
+       "due" takes the number's slot, because a number overdue for a re-check
+       is the one you should not read off and dial. */
+    const noTxt  = !r.z.p ? "no number"
+                 : r.state === "due" ? "RE-CHECK"
+                 : r.z.s;
+    const sfxTxt = !r.z.p ? ""
+                 : r.state === "due"   ? r.until
+                 : r.state === "fresh" ? "✓" + r.until
+                 : "";
+    if (c.lastNo !== noTxt){ c.no.textContent = noTxt; c.lastNo = noTxt; }
+    if (c.lastSfx !== sfxTxt){ c.sfx.textContent = sfxTxt; c.lastSfx = sfxTxt; }
+    /* Compared on its own rather than folded into the branch above. The class
+       happens to change whenever the number does today, but only because
+       "RE-CHECK" replaces the digits; tie the two together and the next state
+       that shares a string silently stops repainting. */
+    const phCls = "ph" + (r.state === "due" ? " due" : "");
+    if (c.lastPhCls !== phCls){ c.ph.className = phCls; c.lastPhCls = phCls; }
 
     const cls = "chip"
       + (r.z.p ? "" : " na")
