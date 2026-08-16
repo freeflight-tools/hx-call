@@ -1,7 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="HX Call">
   <title>HX Call</title>
-  <!-- Full bleed: iOS and Android apply their own corner mask. -->
-  <rect width="512" height="512" fill="#1E6FA8"/>
+  <!-- Rounded, at the same 22% radius the family mark uses (15/64), so the two
+       sit together in a tab strip or a bookmark bar without one looking like a
+       different shape of thing.
+
+       This is the FAVICON and the manifest's `any` icon. It is not the
+       maskable one: icon-512.png keeps its square full bleed, because iOS and
+       Android apply their own corner mask to that and rounding it first would
+       clip the corners twice. Round this, leave the PNGs alone. -->
+  <rect width="512" height="512" rx="112" fill="#1E6FA8"/>
   <!-- Handset, three rounded bars so it survives being shrunk to 48 px.
        The cups sit on one side only, which is what stops it reading as a bone. -->
   <g transform="translate(256 146) rotate(-35) scale(0.66)" fill="#fff">
