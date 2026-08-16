@@ -137,6 +137,26 @@ broken. The URL box and the QR are the only ways that URL leaves this page.
 `refreshLinks()` no longer touches a `#towidget`; re-adding the line without the
 element throws and takes the page's whole link building with it.
 
+**The page runs as three numbered steps, same as Windmap's:** choose what you
+will see, get the link onto your phone, set it up in XCTrack. Step 2 is new.
+The URL box and the QR used to sit under the configurator heading with nothing
+explaining them, so a reader met a read-only field of text and had to work out
+what it was for. Section heads are `1.06em/700` in `--fg`, each opening with a
+hairline, and they carry an accent badge (`h2 .n`, coloured `--on-accent`)
+rather than the words "Step 1:". Numbers for the steps, an **app grid** for the
+app section (filled rects, because a stroked phone outline goes mushy at 12px;
+Windmap also has a **star** for its bonus step). The app section is
+**`h2.apart`**: a full band of space plus a 2px rule in the accent instead of
+the hairline, because the app is not step 4 and with the steps' own heading
+treatment it read as one. `.warn` carries a 3px left bar so a tinted box that
+warns cannot be mistaken for a tinted box that opens something.
+
+**Both setup pages say "The standalone app" and "Open the app", word for word**,
+both open the blurb with *"A separate page from the widget, and it needs none of
+the setup above"*, and both name the platforms: *iPhone, Android and any desktop
+browser*. Only the clause after that differs. This one names the freedom (no
+XCTrack at all), Windmap's names the limit (no map). Keep the frame identical.
+
 **The app card says "no XCTrack needed" in its heading, and that is not
 filler.** This tool is a phone directory, so a plain list needs no map and no
 overlay and IS the whole product, which makes `app.html` the only version

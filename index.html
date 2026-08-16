@@ -32,7 +32,44 @@ h1{margin:0 0 4px;font-size:1.5em;letter-spacing:-.01em}
 .sub{margin:0 0 20px;color:var(--dim);font-size:.92em;line-height:1.5}
 .sub b{color:var(--fg)}
 button{font:600 .9em var(--sans);cursor:pointer}
-h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+/* ── section heads ───────────────────────────────────────────────────
+   Same as the Windmap setup page. These were .82em uppercase in --dim, which
+   is kicker styling: fine for a label, too quiet for the thing a pilot
+   scrolls to find. Now full size, in --fg, and each one OPENS WITH A RULE so
+   the previous section visibly ends rather than just stopping. The rule is
+   the same hairline as the header strip and the footer.
+
+   The numbered ones carry a badge instead of the words "Step 1:". The number
+   is the part that gets scanned, so it should not be buried in a sentence.
+   The app section takes an APP GRID rather than a number, so it is legible as
+   "not a step" before a word of it is read. (Windmap also has a STAR, for its
+   bonus step; this page has no such section.) */
+h2{
+  margin:34px 0 12px;padding-top:17px;border-top:1px solid var(--rule);
+  display:flex;align-items:center;gap:9px;
+  font-size:1.06em;font-weight:700;letter-spacing:-.012em;
+  text-transform:none;color:var(--fg);
+}
+h2 .n{
+  flex:none;width:1.6em;height:1.6em;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--accent);color:var(--on-accent);
+  font:700 .82em/1 var(--sans);letter-spacing:0;
+}
+/* `display:block` because an inline SVG sits on the text baseline and would
+   push itself below centre inside the circle. */
+h2 .n svg{display:block}
+
+/* The app is not step 4, and with the same heading treatment as the steps it
+   read as one. `.apart` ends the sequence: a full band of space, then a rule
+   in the accent rather than the hairline, so the eye registers a different
+   kind of boundary before it reads a word. The badge helps too, an app grid
+   where the steps have numbers and the bonus step has a star, but spacing is
+   what actually does the work here. */
+h2.apart{
+  margin-top:60px;padding-top:46px;
+  border-top:2px solid var(--accent);
+}
 
 /* ── family styling ──────────────────────────────────────────────────
    Follows freeflight-tools.github.io, where each tool owns one colour and
@@ -48,10 +85,10 @@ h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.16em;text-transform:upperca
    Declared on bare :root FIRST and then again in both dark blocks, so no
    colour has its only definition inside a media query. Same rule base.css
    follows. */
-:root{--accent:#1F6FD0;--wash:#F1F7FE;--wash-line:#CDE0F6}
+:root{--accent:#1F6FD0;--on-accent:#FFFFFF;--wash:#F1F7FE;--wash-hi:#E2EEFB;--wash-line:#CDE0F6}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --accent:#6DB0F2;--wash:#0B1622;--wash-line:#1F3B57}}
-[data-theme="dark"]{--accent:#6DB0F2;--wash:#0B1622;--wash-line:#1F3B57}
+  --accent:#6DB0F2;--on-accent:#06121F;--wash:#0B1622;--wash-hi:#102232;--wash-line:#1F3B57}}
+[data-theme="dark"]{--accent:#6DB0F2;--on-accent:#06121F;--wash:#0B1622;--wash-hi:#102232;--wash-line:#1F3B57}
 
 /* ── breadcrumb ───────────────────────────────────────────────────────
    The way back to the family page, moved up from the footer. It can sit at
@@ -99,18 +136,47 @@ h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.16em;text-transform:upperca
 
 /* ── the thing you can open ───────────────────────────────────────────
    A CARD, not a stadium. The stadium marks the one action a page exists
-   for, which here is Copy widget URL. Identical component on the Windmap
+   for, which on both pages is Copy link. Identical component on the Windmap
    setup page. It carries the tool's own wash rather than the neutral panel
    every other box uses, so the one thing here that OPENS something does not
    read as another note. The wash is the tool's band colour from the family
    page. */
 .pick{display:grid;gap:10px;margin:0}
-.pick a{display:flex;gap:12px;align-items:flex-start;padding:14px 15px;
-  background:var(--wash);border:1px solid var(--wash-line);border-radius:10px;
+.pick a{display:flex;gap:13px;align-items:flex-start;padding:18px 18px;
+  background:var(--wash);border:1px solid var(--accent);border-radius:10px;
   text-decoration:none;color:var(--fg);box-shadow:var(--shadow)}
 .pick svg{flex:none;color:var(--accent);margin-top:2px}
-.pick b{display:block;font-size:1em;margin-bottom:4px;color:var(--accent)}
 .pick span{display:block;font-size:.82em;color:var(--dim);line-height:1.45}
+
+/* The app card and the two boxes under it are all tinted rounded rectangles,
+   so the card read as the first of three notes rather than as the one thing
+   there you can open. Two changes, both small:
+
+   `.pick a` takes a border in the ACCENT rather than the wash line, which is
+   the one thing none of the notes has. `.warn` has an amber left bar, so a
+   left bar here would have made them MORE alike, not less.
+
+   `hr.sep` ends the section, and it is the SAME 2px accent rule that h2.apart
+   opens it with, at the same 30px remove, so the app sits inside a matched
+   pair rather than between a heavy rule and a stray hairline. The disclaimers
+   have no heading of their own, so without this the section ran into them.
+
+   Read the four gaps as INSIDE and OUTSIDE the pair of rules. Inside is the
+   section's own padding, 46px at each end, which is what keeps the heading and
+   the card off the rules. Outside is its margin: 60px above, 44px below. The
+   band above is the larger because that is where the numbered sequence ends,
+   which is the boundary a reader is most likely to misread.
+
+   `hr.sep`'s margin-TOP is inner padding and its margin-BOTTOM is outer
+   margin, which is easy to misread as one number doing one job. The 44px also
+   wins the margin collapse against `.warn`'s own 24px, so changing `.warn`
+   will not move it. */
+hr.sep{border:0;border-top:2px solid var(--accent);margin:46px 0 44px}
+/* FIRST-CHILD, not every `b`. The blurb uses `b` for inline emphasis, and an
+   unscoped rule turned those into accent-coloured block elements that broke
+   the sentence into pieces around them. */
+.pick span > b:first-child{display:block;font-size:1em;margin-bottom:4px;color:var(--accent)}
+.pick span b{color:var(--fg)}
 
 .field{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule)}
 .field label{flex:1;min-width:0;font-size:.92em}
@@ -155,10 +221,16 @@ h2{margin:26px 0 8px;font-size:.82em;letter-spacing:.16em;text-transform:upperca
    here. */
 #copy{
   width:100%;padding:13px;margin-top:8px;background:var(--accent);border:0;
-  border-radius:999px;color:#FFF;font:700 .95em var(--sans);
+  border-radius:999px;color:var(--on-accent);font:700 .95em var(--sans);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #copy{color:#06121F}}
-[data-theme="dark"] #copy{color:#06121F}
+/* the icon + label row. `#copy` sets its own text through the span, never
+   through the button's textContent, which would wipe the two SVGs. */
+#copy{display:flex;align-items:center;justify-content:center;gap:8px}
+#copy svg{flex:none}
+#copy .ic-ok{display:none}
+#copy.ok .ic-copy{display:none}
+#copy.ok .ic-ok{display:block}
+
 /* The code stays dark-on-white in both themes: plenty of scanners refuse an
    inverted symbol, and this one exists to be read by a phone camera. */
 .qr{
@@ -177,11 +249,13 @@ ol li{margin-bottom:4px}
   color:var(--dim);font-size:.84em;line-height:1.5;
 }
 .note b{color:var(--fg)}
-.warn{
-  margin:20px 0 0;padding:10px 12px;background:var(--amber-bg);
-  border:1px solid var(--amber-line);border-radius:3px;
-  color:var(--amber);font-size:.82em;line-height:1.45;
-}
+/* A 3px left bar in the full amber, as on the family page. Without it this
+   box is a tinted rounded rectangle, which is exactly what the app card
+   above it is: on the Windmap page both washes are warm and the two read
+   as a pair. The bar makes one of them a warning at a glance. */
+.warn{margin:24px 0 0;padding:10px 12px 10px 13px;background:var(--amber-bg);
+  border:1px solid var(--amber-line);border-left:3px solid var(--amber);
+  border-radius:3px;color:var(--amber);font-size:.82em;line-height:1.45}
 /* Emphasis inside an amber panel has to move with the theme. On the Windmap
    pages a hardcoded dark-theme tint put the safety warning's bold words at
    roughly no contrast on the light background, so the emphasised text was
@@ -198,14 +272,20 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--rule);
 footer p{margin:0 0 10px;font-size:1.1em}
 
 /* ── pointer feedback (see hx/base.css) ─────────────────────────── */
-.pick a:active,#reset:active{background:var(--panel-hi)}
+#reset:active{background:var(--panel-hi)}
+/* --wash-hi, NOT --panel-hi: the card is washed, and the grey panel tint used
+   to replace that wash on tap, so pressing it turned the card grey. */
+.pick a:active{background:var(--wash-hi)}
 #copy:active{filter:brightness(.92)}
 @media (hover:hover) and (pointer:fine){
   .pick a,#reset,#copy{transition:background-color .12s,border-color .12s,filter .12s,transform .14s}
-  .pick a:hover,#reset:hover{border-color:var(--accent)}
-  /* the family page's lift, same numbers. Gated behind a fine pointer with
-     everything else here: on a touch screen :hover sticks after a tap. */
-  #copy:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  #reset:hover{border-color:var(--accent)}
+  /* The card had `border-color:var(--accent)` on hover, which did nothing at
+     all once its resting border became the accent too. It deepens its wash
+     instead, and takes the same 1px lift as the button. */
+  .pick a:hover,#copy:hover{transform:translateY(-1px)}
+  .pick a:hover{background:var(--wash-hi)}
+  #copy:hover{filter:brightness(1.06)}
   .field.set > summary:hover,.setlist label:hover{color:var(--fg)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
@@ -313,20 +393,39 @@ footer p{margin:0 0 10px;font-size:1.1em}
        Same arrangement as the Windmap setup page: the configurator is the
        page, and the app it also ships gets a card after the steps. -->
 
-  <h2>Widget configurator</h2>
+  <h2><span class="n">1</span>Choose what you'll see</h2>
   <div id="fields"></div>
   <button type="button" id="reset">Reset to defaults</button>
 
+  <!-- The URL box and the QR used to sit under the configurator heading with
+       nothing explaining them, so a reader met a read-only field of text and
+       had to work out what to do with it. Same step, same note and same order
+       as the Windmap setup page. -->
+  <h2><span class="n">2</span>Get the link onto your phone</h2>
+  <p class="note">
+    <b>On your phone:</b> tap Copy, then paste it into XCTrack in step 3.<br>
+    <b>On a computer:</b> point your phone's camera at the QR code.
+  </p>
   <textarea id="url" rows="3" readonly translate="no"></textarea>
-  <button id="copy" type="button">Copy widget URL</button>
+  <button id="copy" type="button">
+    <svg class="ic-copy" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="9" y="9" width="12" height="12" rx="2.4"/>
+      <path d="M5 15H4.2A2.2 2.2 0 0 1 2 12.8V4.2A2.2 2.2 0 0 1 4.2 2h8.6A2.2 2.2 0 0 1 15 4.2V5"/>
+    </svg>
+    <svg class="ic-ok" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 6L9 17l-5-5"/>
+    </svg>
+    <span id="copyTxt" aria-live="polite">Copy link</span>
+  </button>
 
   <div class="qr">
     <canvas id="qrc" role="img" aria-label="QR code of the widget URL"></canvas>
-    <small>Same URL as above. Point your phone's camera at it to open it there,
-      then copy it into XCTrack.</small>
+    <small>The same link. Open it on your phone, then copy it from there.</small>
   </div>
 
-  <h2>Add it to XCTrack</h2>
+  <h2><span class="n">3</span>Set it up in XCTrack</h2>
   <ol>
     <li>Add a <b>Web page</b> widget and paste the URL above.</li>
     <li>Turn on <b>Allow web page to access XCTrack data</b>. This is what gives it your position.</li>
@@ -349,7 +448,8 @@ footer p{margin:0 0 10px;font-size:1.1em}
        product. That makes this the only version available to a pilot on iOS,
        or to anyone who does not fly with XCTrack. Windmap's list is the
        mirror image, an extra that loses the point of Windmap without a map. -->
-  <h2>Also: the app, no XCTrack needed</h2>
+  <h2 class="apart"><span class="n"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"
+      aria-hidden="true"><rect x="3" y="3" width="7.6" height="7.6" rx="2.1"/><rect x="13.4" y="3" width="7.6" height="7.6" rx="2.1"/><rect x="3" y="13.4" width="7.6" height="7.6" rx="2.1"/><rect x="13.4" y="13.4" width="7.6" height="7.6" rx="2.1"/></svg></span>The standalone app</h2>
   <div class="pick">
     <a id="toapp" href="app.html">
       <!-- A phone with one app tile on it: this link opens something you can
@@ -364,12 +464,16 @@ footer p{margin:0 0 10px;font-size:1.1em}
       </svg>
       <span>
         <b>Open the app →</b>
-        The full list with landmarks and notes, in any browser, iPhone included.
-        No XCTrack and no setup. Add it to your home screen and it works with no
-        data connection, which is the point: you need signal to dial, not data.
+        <b>A separate page from the widget</b>, and it needs none of the setup
+        above: <b>no XCTrack at all</b>, just the full list with landmarks and
+        notes. Runs on <b>iPhone, Android and any desktop browser</b>. Add it to
+        your home screen and it works with no data connection, which is the
+        point: you need signal to dial, not data.
       </span>
     </a>
   </div>
+
+  <hr class="sep">
 
   <p class="warn">
     This is a phone directory, not an airspace tool. It has no boundaries and no
@@ -450,11 +554,25 @@ document.getElementById("reset").addEventListener("click", function(){
   refreshLinks();
 });
 
-document.getElementById("copy").addEventListener("click", function(){
-  const btn = this;
+/* The label is written through the span, never through the button's own
+   textContent, which would delete the two icons with it. "Copy link" on both
+   setup pages; this one said "Copy widget URL". */
+const copyBtn = document.getElementById("copy");
+const copyTxt = document.getElementById("copyTxt");
+let copyTimer = 0;
+
+copyBtn.addEventListener("click", function(){
   const done = function(){
-    btn.textContent = "Copied";
-    setTimeout(function(){ btn.textContent = "Copy widget URL"; }, 1600);
+    copyBtn.className = "ok";
+    copyTxt.textContent = "Copied";
+    /* clear first: hammering the button otherwise stacks timers, and the
+       earliest one resets the label while a later copy still reads as fresh */
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(function(){
+      copyBtn.className = "";
+      copyTxt.textContent = "Copy link";
+      copyTimer = 0;
+    }, 1600);
   };
   if (navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(urlBox.value).then(done, function(){ urlBox.select(); });
