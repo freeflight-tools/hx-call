@@ -17,7 +17,7 @@
    the background revalidation picks those up on its own.
    ══════════════════════════════════════════════════════════════════ */
 
-const CACHE = "hx-call-v1";
+const CACHE = "hx-call-v2";
 
 const ASSETS = [
   "./",
@@ -33,7 +33,9 @@ const ASSETS = [
   "icon.svg",
   "icon-180.png",
   "icon-192.png",
-  "icon-512.png"
+  "icon-512.png",
+  "img/widget.webp",
+  "img/widget.png"
 ];
 
 self.addEventListener("install", function(event){
