@@ -17,7 +17,7 @@
    the background revalidation picks those up on its own.
    ══════════════════════════════════════════════════════════════════ */
 
-const CACHE = "hx-call-v5";
+const CACHE = "hx-call-v6";
 
 const ASSETS = [
   "./",

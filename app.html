@@ -205,7 +205,21 @@ footer{padding:12px 10px;color:var(--dim);font-size:.72em;line-height:1.5;font-f
   <div class="rowset" id="fields"></div>
   <div class="sheetfoot">
     <button type="button" id="reset">Reset</button>
-    <a id="towidget" href="widget.html">Widget version</a>
+    <!-- Points at the SETUP PAGE, not at widget.html. That link opened the
+         widget itself, which is transparent by design and draws nothing until
+         a zone is in range: in a browser it is a blank white page that reads
+         as broken. The same trap was removed from both setup pages. The setup
+         page is also the thing a reader actually wants from here, since it
+         builds the URL rather than being it.
+
+         target=_blank ON PURPOSE. Installed as a PWA this page runs in a
+         standalone window whose manifest scope is "./", so a plain link to
+         index.html navigates INSIDE the app and strands the pilot in a setup
+         guide with no way back. There is no API for "open in the default
+         browser"; _blank is what hands it to one. A Custom Tab on Android,
+         Safari on iOS, a normal tab on desktop. Same reasoning, same markup,
+         as the Windmap app. -->
+    <a id="tosetup" href="index.html" target="_blank" rel="noopener">Set up the XCTrack widget ↗</a>
   </div>
 </details>
 
@@ -226,8 +240,10 @@ const made   = {};
 /* ── settings sheet, generated from HX.SPEC so it can never drift ── */
 (function settings(){
   const relink = function(){
-    document.getElementById("towidget").href =
-      HX.buildUrl("widget.html", null, { placeholders: true });
+    /* The setup page, carrying whatever is set here, so it opens on the
+       pilot's own configuration rather than the defaults. No placeholders:
+       they belong on a widget URL, and this is not one. */
+    document.getElementById("tosetup").href = HX.buildUrl("index.html");
   };
   const fields = HX.fields(document.getElementById("fields"), {
     skipWidgetOnly: true,               // valign does nothing on this page
@@ -402,11 +418,7 @@ HX.start(function(st){
   if (moreEl.textContent !== mTxt) moreEl.textContent = mTxt;
 });
 
-/* Placeholders here too: this link is also how a widget URL gets copied,
-   and one without them loses XCTrack's last known position. Literal in a
-   browser, where they parse to NaN and are ignored. */
-document.getElementById("towidget").href =
-  HX.buildUrl("widget.html", null, { placeholders: true });
+document.getElementById("tosetup").href = HX.buildUrl("index.html");
 </script>
 </body>
 </html>
