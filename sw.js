@@ -17,7 +17,7 @@
    the background revalidation picks those up on its own.
    ══════════════════════════════════════════════════════════════════ */
 
-const CACHE = "hx-call-v3";
+const CACHE = "hx-call-v4";
 
 const ASSETS = [
   "./",
@@ -34,6 +34,7 @@ const ASSETS = [
   "icon-180.png",
   "icon-192.png",
   "icon-512.png",
+  "icon-512-maskable.png",
   "img/widget.webp",
   "img/widget.png"
 ];
