@@ -181,6 +181,25 @@ the kicker. `--amber-str` lives in `hx/base.css` for the same reason it does in
 Windmap's: bold text inside an amber panel needs a tint that moves with the
 theme, or the emphasised words become the least legible in the box.
 
+**Visit counting is on `index.html` ONLY, and never on `app.html` or
+`widget.html`.** Cloudflare Web Analytics, cookieless: page views and country,
+no cookies, no identifier, nothing stored on the device, no cross-site profile.
+That is what keeps it out of consent-banner territory, so **there is no cookie
+dialog and there must not need to be one**. Pick a tool that sets a cookie and
+you have bought a banner for a free tool aimed at pilots.
+
+The beacon is INJECTED by a guarded snippet rather than written as a plain
+`<script src>`: the token is checked against `/^[a-f0-9]{32}$/` first, so an
+unconfigured copy makes no request at all. Fail closed, so the page is safe to
+ship before the account exists.
+
+**The privacy copy is part of this change, not decoration.** These pages said
+"no analytics" before there were any. The line that is now true, and the one a
+reader cares about, is not tools-versus-nothing but *the pages you fly with*
+against *the pages you set up on*: `app.html` and `widget.html` still say "no
+analytics" and still mean it. Adding a beacon to either would make the page lie
+about itself, which is the one thing this project cannot do.
+
 ## Open threads
 
 1. **Five numbers are missing**, Payerne, Dübendorf, Lugano, St. Gallen, Les
