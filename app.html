@@ -226,7 +226,8 @@ const made   = {};
 /* ── settings sheet, generated from HX.SPEC so it can never drift ── */
 (function settings(){
   const relink = function(){
-    document.getElementById("towidget").href = HX.buildUrl("widget.html");
+    document.getElementById("towidget").href =
+      HX.buildUrl("widget.html", null, { placeholders: true });
   };
   const fields = HX.fields(document.getElementById("fields"), {
     skipWidgetOnly: true,               // valign does nothing on this page
@@ -401,7 +402,11 @@ HX.start(function(st){
   if (moreEl.textContent !== mTxt) moreEl.textContent = mTxt;
 });
 
-document.getElementById("towidget").href = HX.buildUrl("widget.html");
+/* Placeholders here too: this link is also how a widget URL gets copied,
+   and one without them loses XCTrack's last known position. Literal in a
+   browser, where they parse to NaN and are ignored. */
+document.getElementById("towidget").href =
+  HX.buildUrl("widget.html", null, { placeholders: true });
 </script>
 </body>
 </html>

@@ -429,10 +429,29 @@ const HX = {
   },
 
   /* build a shareable URL for a page with the current (or given) config */
-  buildUrl: function(page, over){
+  /* `opts.placeholders` appends XCTrack's ${lat}/${lng} substitution tokens,
+     and a WIDGET url should always have them. XCTrack fills them with its LAST
+     KNOWN position even when there is no GPS fix, whereas getLocation()
+     returns the string "null" in that case. So they are the only source that
+     answers before a lock, which is exactly when a pilot is on the ground with
+     an empty widget wondering whether it works. Same reasoning, and the same
+     tokens, as the Windmap widget.
+
+     Appended RAW. Percent-encoding them would leave XCTrack hunting for a
+     literal it can no longer find and the widget would silently lose the
+     fallback. An unsubstituted token parses to NaN and is ignored (see the
+     URL-parameter note above), so the chain falls through to the next source
+     rather than rendering a wrong position.
+
+     This is safe only because the setup tells the pilot to set refresh rate 0:
+     with substitution AND a refresh interval, XCTrack reloads the whole page
+     on that interval. The guarded store above is what carries the re-check
+     clock across such a reload. */
+  buildUrl: function(page, over, opts){
     const c = Object.assign({}, cfg, over || {});
     const qs = [];
     for (const sp of SPEC) if (c[sp.key] !== sp.def) qs.push(sp.key + "=" + encodeURIComponent(c[sp.key]));
+    if (opts && opts.placeholders) qs.push("lat=${lat}", "lng=${lng}");
     return page + (qs.length ? "?" + qs.join("&") : "");
   },
 

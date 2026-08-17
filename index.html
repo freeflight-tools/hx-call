@@ -481,6 +481,19 @@ footer p{margin:0 0 10px;font-size:1.1em}
     <li>Set <b>refresh rate to 0</b>. The page updates itself.</li>
   </ol>
 
+  <!-- getLocation() returns the string "null" until the GPS has a fix, which is
+       exactly when a pilot is standing at launch looking at a blank widget and
+       deciding the thing is broken. The placeholders are XCTrack's last known
+       position and cover that gap. An unsubstituted "${lat}" arrives as a
+       literal, parses to NaN and is ignored, so the chain falls through rather
+       than showing a wrong position. Same note, same reason, on the Windmap
+       setup page. -->
+  <p class="note">
+    <b>Don't shorten the link.</b> The <code translate="no">${lat}</code> and <code translate="no">${lng}</code>
+    at the end let XCTrack hand over its last known position, so the zones
+    appear immediately instead of after the GPS locks on.
+  </p>
+
   <p class="note">
     <b>An empty widget is normal.</b> It draws nothing while the GPS is still
     getting a fix, and nothing when no zone is within range, so it stays out of
@@ -581,7 +594,9 @@ function drawQr(url){
 }
 
 function refreshLinks(){
-  const w = HX.buildUrl("widget.html");
+  /* placeholders on the WIDGET url only. The app has a real geolocation
+     permission to fall back on; the widget inside XCTrack does not. */
+  const w = HX.buildUrl("widget.html", null, { placeholders: true });
   const a = HX.buildUrl("app.html");
   /* No #towidget any more: linking straight to widget.html opened a
      transparent page that renders white in a browser. The widget URL now
