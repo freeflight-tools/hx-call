@@ -296,6 +296,40 @@ before assuming.
   for pdcs. It isn't: pdcs consumes clean text. It may still be relevant to
   anyone building a receiver.
 
+### Update, 19 August 2026: consumed, and still blocked
+
+Re-measured before building on it. Everything above held: `Atis.php` returned
+clean prose again (`THIS IS BERN INFORMATION YANKEE, AT 0720. ... CTR IS
+ACTIVE. TMA 1 AND 2 ARE ACTIVE. TMA 3, 4, 5 AND 6 ARE NOT ACTIVE.`), and
+pgairspace returned the same reading through its recogniser as *"Burn clearance
+delivery ... TMA tree four five and six are not active ... Cable K"*. The two
+agreed on every sector, which is the first independent check either pipeline
+has had. The owner chose the ATIS text over the transcript for the obvious
+reason, and `hx/live.js` now renders it on the widget's Bern chip.
+
+Two things were confirmed rather than assumed:
+
+- **Still no CORS.** GET and preflight OPTIONS, from this origin, no
+  `access-control-allow-origin` in either. The feature is written and inert
+  until that changes; see CLAUDE.md for the two ways out.
+- **`Atis.php` is LSZB and nothing else.** `?icao=`, `?station=`, `?ad=` and
+  `?a=` are all ignored and return Bern. There is no second airspace behind
+  that URL to ask for.
+
+Also checked, for the other zones: **only LSZH and LSGG have a real datalink
+ATIS in Switzerland**, and LSZB, LSGS, LSZA, LSZL, LSZR, LSZG, LSGC, LSMP,
+LSME and LSMD all return "No ATIS available" on atis.guru. But **Zürich's
+departure D-ATIS names the Sierra sectors** in machine-readable text:
+
+```
+LSZH DEP ATIS Z 0650Z DEP RWY 28. TRL 70. ARRIVALS, EXP ILS APCH, RWY 14.
+TMA S 1 IS NOT ACT. TMA S 2 AND S 3 ARE NOT ACT. WIND 230 DEG, 4 KT ...
+```
+
+That is the `zrh` zone exactly, and it is the only other zone in `hx/data.js`
+reachable without a receiver or a robot dialling a tape. Geneva's says nothing
+about TMA activity, and Basel is LFSB, which has no datalink ATIS at all.
+
 ## Other leads
 
 **SHV airspace DB** (dominik@airriders.ch), a `Phone` field there, or the

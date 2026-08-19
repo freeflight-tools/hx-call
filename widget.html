@@ -129,6 +129,38 @@ body{padding:2px}
 /* No number on file is not a reading, so it does not get the reading's weight. */
 .chip.na .ph b{font-size:calc(10px * var(--scale));font-weight:400;color:var(--dim)}
 
+/* ── live ATIS line (hx/live.js) ───────────────────────────────────
+   Sits BETWEEN the name and the number, never after it. `.ph` is pinned to
+   the bottom of the stretched chip so every number in a row shares a
+   baseline, and only one chip in the grid has this line: put it last and
+   Bern's number alone would sit a line higher than its neighbours'.
+
+   Hidden with a CLASS, not the `hidden` attribute. The browser applies
+   `hidden` as a low-priority `[hidden]{display:none}` and this rule's own
+   `display:flex` would outrank it, leaving an empty flex row in the chip. */
+.lv{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:calc(3px * var(--scale));
+  padding-top:calc(2px * var(--scale));
+  line-height:1.15;
+}
+.lv.off{display:none}
+/* The source and its timestamp: small, dim, and the thing that makes the
+   reading's age readable rather than implied. */
+.lv i{
+  flex:none;font-style:normal;font-family:var(--mono);
+  font-size:calc(8.5px * var(--scale));color:var(--dim);white-space:nowrap;
+}
+/* GREEN IS THE ACTIVE LIST, and it is the only green in the chip that is
+   not about the re-check clock. Amber when the tape says a sector is about
+   to be activated, red when the reading has aged out: at that point the
+   number below is the answer, which is why the number is what stays. */
+.lv b{
+  font-family:var(--mono);font-size:calc(10px * var(--scale));font-weight:700;
+  color:var(--green);overflow-wrap:break-word;
+}
+.lv.pending b{color:var(--amber)}
+.lv.stale b{color:var(--red)}
+
 /* ── pointer feedback (see hx/base.css) ───────────────────────────────
    Background only. The left border carries the re-check state, so a
    border-color hover would quietly erase fresh/due. Chips without a
@@ -151,6 +183,7 @@ a.chip:active{background:var(--panel-hi)}
 
 <script src="hx/data.js"></script>
 <script src="hx/core.js"></script>
+<script src="hx/live.js"></script>
 <script src="hx/offline.js"></script>
 <script>
 "use strict";
@@ -233,11 +266,22 @@ function chipFor(z){
   ph.innerHTML = "<b></b><i></i>";
   ph.querySelector("b").textContent = z.p ? z.s : "no number";
 
-  el.appendChild(top); el.appendChild(ph);
+  /* Live ATIS line. Built for every chip and shown for the one zone that
+     has a source, so the render loop stays branch-free and a second source
+     needs no change here. <i> is where it came from and when, <b> the
+     active sectors. Two nodes for the same reason .ph has two: one of them
+     has to be readable at arm's length and the other must not compete. */
+  const lv = document.createElement("span");
+  lv.className = "lv off";
+  lv.innerHTML = "<i></i><b></b>";
+
+  el.appendChild(top); el.appendChild(lv); el.appendChild(ph);
   return (made[z.id] = {
     el:el, km:km.querySelector("b"), un:km.querySelector("s"),
     ph:ph, no:ph.querySelector("b"), sfx:ph.querySelector("i"),
-    lastCls:"", lastKm:"", lastNo:"", lastSfx:"", lastPhCls:""
+    lv:lv, lvAt:lv.querySelector("i"), lvTxt:lv.querySelector("b"),
+    lastCls:"", lastKm:"", lastNo:"", lastSfx:"", lastPhCls:"",
+    lastLvAt:"", lastLvTxt:"", lastLvCls:""
   });
 }
 
@@ -251,8 +295,10 @@ HX.start(function(st){
 
   // reorder / insert only what changed
   let n = 0;
+  const onScreen = [];
   for (const r of vis){
     const c = chipFor(r.z);
+    onScreen.push(r.z.id);
     if (grid.children[n] !== c.el) grid.insertBefore(c.el, grid.children[n] || null);
     n++;
 
@@ -283,6 +329,23 @@ HX.start(function(st){
     const phCls = "ph" + (r.state === "due" ? " due" : "");
     if (c.lastPhCls !== phCls){ c.ph.className = phCls; c.lastPhCls = phCls; }
 
+    /* Live status is an ENHANCEMENT LAYER: `null` means say nothing, and the
+       chip is then byte for byte what it was before hx/live.js existed. It
+       never replaces the number, and the one state that hides the sector
+       list is the stale one, where the number IS the answer. */
+    const lv     = HX.live ? HX.live.get(r.z.id) : null;
+    const lvAt   = lv ? "ATIS " + lv.at : "";
+    const lvTxt  = !lv                      ? ""
+                 : lv.state === "stale"     ? "STALE"
+                 : lv.state === "pending"   ? "ACTIVATING"
+                 /* Empty list with a current reading is a fact the tape
+                    stated, not a missing answer, so it prints. */
+                 : lv.list || "NONE ACTIVE";
+    const lvCls  = "lv" + (!lv ? " off" : lv.state === "ok" ? "" : " " + lv.state);
+    if (c.lastLvAt  !== lvAt ){ c.lvAt.textContent  = lvAt;  c.lastLvAt  = lvAt;  }
+    if (c.lastLvTxt !== lvTxt){ c.lvTxt.textContent = lvTxt; c.lastLvTxt = lvTxt; }
+    if (c.lastLvCls !== lvCls){ c.lv.className      = lvCls; c.lastLvCls = lvCls; }
+
     const cls = "chip"
       + (r.z.p ? "" : " na")
       + (r.state !== "none" ? " " + r.state : "")
@@ -293,7 +356,16 @@ HX.start(function(st){
   // drop anything no longer in range
   while (grid.children.length > n) grid.removeChild(grid.lastChild);
 
+  /* Told every render, so the poller runs only while a zone it has a source
+     for is actually drawn. A pilot nowhere near Bern makes no requests. */
+  if (HX.live) HX.live.watch(onScreen);
+
 }, {keepNearest:false});
+
+/* A reading arriving between position ticks has to repaint. emit() recomputes
+   and the loop above writes only what changed, so this costs a comparison per
+   chip rather than a rebuild. */
+if (HX.live) HX.live.onChange(function(){ HX.refresh(); });
 </script>
 </body>
 </html>

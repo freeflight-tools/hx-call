@@ -129,6 +129,58 @@ to them.
   whole page periodically, and this is what carries the re-check clock across.
 - Plain ES5-compatible JS, no modules, no transpilation. Old Android WebViews.
 
+**Live ATIS status is one file, `hx/live.js`, and "enhancement layer" is meant
+literally: delete the file and the widget is unchanged.** It puts the active
+Bern sectors on the Bern chip, in green, above the number. Everything about it
+is arranged so that failing is invisible rather than misleading.
+
+- **It reads the ATIS, not a transcript.** `bern.pdcs.ch/php/Atis.php` returns
+  clean punctuated prose with its own generation timestamp, i.e. a text ATIS,
+  while `api.pgairspace.ch` recognises radio audio and returns "Burn clearance
+  delivery" and "TMA tree four five and six" (both re-checked 2026-08-19).
+  Owner's call, and the reason is the one sentence in eleven that carries the
+  status: a recogniser that drops a word in that sentence changes the answer.
+  `docs/background.md` has both pipelines in full.
+- **Two clocks, both from the pdcs widget, and they fail differently.** The
+  ATIS goes out of date at the source after 35 minutes; our own connection can
+  die with a green line on screen, so a successful load older than 4 minutes is
+  also stale. Either alone leaves a hole. Stale prints `STALE` in red and drops
+  the sector list, because at that point the number below it is the answer.
+- **`WILL BE ACTIVATED` is scanned for in the raw text**, which is why the
+  fetch asks for `r=1`. The tape says "is active", "is not active" AND "will be
+  activated", the JSON has one boolean, so a sector about to switch on is
+  indistinguishable from one that is off. Finding the phrase turns the whole
+  line amber and reads `ACTIVATING`. Believed, never parsed further.
+- **The line sits between the name and the number, never after it.** `.ph` is
+  pinned to the bottom of a stretched chip so every number in a row shares a
+  baseline; put the line last and Bern's number alone would sit a line high.
+- **Polling is gated on the zone being drawn**, told to `HX.live.watch()` by
+  the render loop, so a pilot nowhere near Bern makes no requests at all. One a
+  minute while it is on screen, matching the pdcs widget, and failures back off
+  (three at a minute, then five, then stop) so a dead endpoint costs about ten
+  requests per page load. That is what makes `live` safe to default ON.
+- **It is on the widget only.** `app.html` is the planning view and a phone
+  number is what it is for; live sector state there would be read hours before
+  the flight and would be worth nothing by then.
+
+**`Accept: application/json` is mandatory, and its absence is silent.**
+`Atis.php` content-negotiates: without that header it answers `text/plain`
+ATIS prose for **every** value of `r`, so `JSON.parse` fails, `fail()` runs,
+the poll backs off and the chip renders as though the feature were switched
+off. Measured 2026-08-19. `Accept` is CORS-safelisted and `application/json`
+has no unsafe bytes, so it triggers no preflight and costs nothing. The `r`
+parameter selects whether the *raw* text is included **inside** the JSON; it
+does not select JSON.
+
+**And it does not work yet, for one more reason.** `Atis.php` sends no
+`access-control-allow-origin` header, re-measured 2026-08-19 on both GET and a
+preflight OPTIONS, so the browser refuses us the body and the chip renders
+exactly as it always has. Either pdcs.ch adds that one header, which is the
+right fix and keeps the data theirs, or `SRC` points at a mirror that does:
+`tools/atis-proxy.js` is a dev proxy for a laptop and carries the eight-line
+Cloudflare Worker for the real one. A separate host behind a feature flag is
+what this file already allowed; the offline core stays static either way.
+
 **`index.html` never links to `widget.html`, and the app gets a card after the
 setup steps.** The widget was linked from the top of the page and opened a
 **white page**: it is transparent by design and draws nothing until a zone is
@@ -237,8 +289,12 @@ from the site. Re-render it whenever `icon.svg` changes.
    WebView and the widget copies the number instead of linking to it. An issue
    asking XCTrack to forward the intent is drafted; if they ship it, drop
    `NO_TEL` and the chips go back to dialling directly.
-4. **Live status.** See `docs/next-session.md`. Ask the friend who built
-   pgairspace.ch before reverse-engineering anything.
+4. **Live status is built and blocked on one header.** `hx/live.js` renders
+   Bern's active sectors on the widget chip; `bern.pdcs.ch/php/Atis.php` sends
+   no `access-control-allow-origin`, so nothing shows until Lukas adds it or a
+   mirror goes up. **Asking him is the whole task.** The pgairspace API needs
+   no such ask (it sends `*`), but it is speech-to-text and was rejected for
+   that. `docs/background.md` has both.
 5. **Upstream the data** to the SHV airspace DB (dominik@airriders.ch) rather
    than maintaining it alone, and check with luftraum@shv-fsvl.ch before
    publishing. Neither contacted yet.

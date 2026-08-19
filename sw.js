@@ -17,7 +17,7 @@
    the background revalidation picks those up on its own.
    ══════════════════════════════════════════════════════════════════ */
 
-const CACHE = "hx-call-v6";
+const CACHE = "hx-call-v7";
 
 const ASSETS = [
   "./",
@@ -27,6 +27,7 @@ const ASSETS = [
   "hx/base.css",
   "hx/core.js",
   "hx/data.js",
+  "hx/live.js",
   "hx/qr.js",
   "hx/offline.js",
   "manifest.webmanifest",

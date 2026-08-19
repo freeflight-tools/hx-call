@@ -49,6 +49,13 @@ const SPEC = [
   /* Off by default: a button that can't be dialled misses the point of a
      speed-dial. The entries stay in data.js either way. See CLAUDE.md. */
   {key:"nonum",   type:"bool", def:0,          label:"Show zones with no number", hint:"Nothing to dial, but you'll know they're there"},
+  /* Live ATIS status on the chip, for the zones that have a readable source.
+     Bern only today. ON by default because it costs nothing where there is no
+     source: hx/live.js polls only while such a zone is actually on screen, and
+     backs off to nothing when the endpoint refuses. Never a dependency; with
+     this off, or the fetch failing, the chip is exactly what it always was. */
+  {key:"live",    type:"bool", def:1,          only:"widget",
+   label:"Show live ATIS status", hint:"Bern only so far. Still call to confirm"},
   {key:"valign",  type:"enum", options:["top","center","bottom"], def:"top", only:"widget",
    label:"Where the buttons sit", hint:"When the widget is taller than the list of results"},
   {key:"hide",    type:"set",  def:"",
